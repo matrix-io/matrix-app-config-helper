@@ -1,0 +1,21 @@
+{
+  "name": "matrix-app-config-helper",
+  "version": "0.0.0",
+  "description": "MatrixOS Application Configuration Helper Utility - Makes sure the config file is valid, and adds defaults. ",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test/entry.test.js"
+  },
+  "keywords": [
+    "matrix-os",
+    "matrix-io",
+    "config"
+  ],
+  "author": " <sean.canton@admobilize.com>",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^1.5.2",
+    "js-yaml": "^3.5.5",
+    "lodash": "^4.6.1"
+  }
+}
