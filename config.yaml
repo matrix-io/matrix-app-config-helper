@@ -108,6 +108,7 @@ widgets:
         # Matrix.type('face').send({ detections: { beard: 0.1, smile: 0.55... } })
         display : list
         grouped : true
+
   powerBig:
     type: power
     layout: overlap
@@ -156,6 +157,7 @@ widgets:
   heat:
     type: temperature
     layout: grid
+    service: pooping
     filter:
       - recent
       - now
@@ -185,35 +187,38 @@ widgets:
 
   joystick:
     # Matrix.type('joystick').send()
-    type: joystick,
-    display: radial,
+    type: joystick
+    display: radial
     control: joystick
     # vvv default
     controlMap:
       - joystick: joystick
+
   controls:
-    label: Robot Controls,
-    type: control,
-    layout: cross,
-    # these events trigger `control` in app
-    controlMap:
-      ^ : up,
-      v : down,
-      o : stop,
-      <- : left,
+    label: Robot Controls
+    type: control-event
+    layout: cross
+    # these events trigger `control-up` in app
+    # are written as "^" in button
+    controlEventMap:
+      ^ : up
+      v : down
+      o : stop
+      <- : left
       -> : right
+    control: button
+    # important to note
 
   battery:
-    type: power
     label: Power Level
     layout: books
     displayMap:
-      -
+      powerBar:
         type: power
         display: bar
         theme: rainbow
         size: 1
-      -
+      powerHistory:
         type: power
         display: line
         filter: last-week
@@ -226,7 +231,7 @@ widgets:
     layout: stack
     display:
       -
-        display: digits
+        display: digit
         size: 6
         filter: round
       -

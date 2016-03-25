@@ -1,7 +1,7 @@
 var fs = require( 'fs' );
 var yaml = require( 'js-yaml' )
 var _ = require( 'lodash' )
-log = console.log;
+var log = console.log;
 
 try {
 
@@ -14,6 +14,13 @@ try {
 
   var screens = config.screens;
   var widgets = config.widgets;
+  var services = config.services;
+  var filters = config.filters;
+
+  var serviceNames = Object.keys(services);
+  var filterNames = Object.keys(filters);
+  var widgetNames = Object.keys(widgets);
+  var screenNames = Object.keys(screens);
 
   var screenWidgetList = _.flatten( _.map( screens, function ( v, k ) {
     return _.flattenDeep( v );
@@ -23,7 +30,7 @@ try {
   var widgetDiff = _.difference( screenWidgetList, widgetList );
   // console.log(widgetDiff)
   if ( widgetDiff.length > 0 ) {
-    throw new Error( 'Missing Widget Definition: ' + widgetDiff.join( ', ' ) )
+    throw new Error( 'Screens Missing Widget Definition: ' + widgetDiff.join( ', ' ) )
   }
 
   // empty key checklist to parse widget status
@@ -44,12 +51,13 @@ try {
   _.forIn( widgets, function ( w, name ) {
 
       if ( w === null || nKey( w ) === 0 || _.isEmpty( w ) ) {
-        log( name, 'is null' )
+        log( name, 'is null' );
 
         // graciously allow existence
         w.name = name;
       }
 
+      // take care of name
       if ( _.has( w, 'name' ) ) {
         console.log( 'Name is a reserved keyword. Use Label for text.' )
         return;
@@ -59,15 +67,76 @@ try {
         w.name = name;
       }
 
-      // make sure data type is defined
-      if ( _.has( w, 'type' ) || _.has( w, 'displayMap.type' ) ) {
-        widgetTests.type[ name ] = true;
+      // SET DEFAULTS
+      if ( !_.has(w, 'type')){
+        w.type = name;
+        log('default', name+'.type ==', w.type );
       }
 
-      // check for interface / display
-      if ( screenWidgetList.indexOf( w ) > -1 ) {
-        widgetTests.usage[ name ] = true;
+
+      // check multi displays defined in displayMap or display, automap display
+      if ( _.has( w, 'displayMap' ) || _.isObject( w.display ) ) {
+        if ( _.isObject( w.display ) ) {
+          // default displayMap to display
+          if ( !_.isEmpty( w.displayMap ) ) {
+            console.log( 'display takes precedence over display map: ', w.name )
+          }
+          w.displayMap = w.display;
+        } else if ( _.isString( w.display ) ) {
+          // apply display to all displayMap children without display
+          _.forIn( w.displayMap, function ( d ) {
+            if ( !_.has( d, 'display' ) ) {
+              d.display = w.display;
+            }
+          } );
+        }
       }
+
+
+      // Make sure all controls are valid & automap controlEventMap
+      if ( _.has(w, 'control') || _.has(w, 'controlEventMap') ){
+        if ( _.isObject(w.control)){
+          if ( _.has(w, 'controlEventMap')){
+            log('contrl and controlEventMap are both objects, defaulting to control');
+            w.controlEventMap = control;
+          }
+        } else if ( _.isString(w.control)){
+          // single control
+          if ( isControl(w.control)){
+            log('control registered:', w.name, w.control);
+            // apply control
+          _.forIn(w.controlEventMap, function(v,k){
+            if ( _.isString(v)){
+              var eventName = v;
+              w.controlEventMap[k] = {
+                name : k,
+                type : w.type,
+                event : eventName
+              };
+            }
+          })
+          } else {
+            log(' invalid control:', w.name, w.control);
+          }
+        }
+      }
+
+
+      // SETUP TESTS
+      // check for interface / display
+      if ( screenWidgetList.indexOf( w.name ) > -1 ) {
+        log('widget has screen ', w.name)
+      } else {
+        log('widget is unused in screen', w.name)
+      }
+
+      // make sure data type is defined
+        for ( var dk in _.keys(w.displayMap) ) {
+          var dv = w.displayMap[dk];
+          if ( _.has(dv, 'type') ){
+            log(w.name, dk,dv, dv.type, 'type')
+          }
+        }
 
       // make sure it can display
       if ( !( _.has( w, 'display' ) || _.has( w, 'displayMap' ) ||
@@ -81,8 +150,11 @@ try {
         }
       }
 
+      // VALIDATE OBJECT LOGIC
+
       // ensure multi-widgets have layout set
-      if ( nKey( w.display ) + nKey( w.displayMap ) + nKey( w.control ) > 1 ) {
+      var subWidgetCount = nKey( w.displayMap ) + nKey( w.controlEventMap );
+      if ( subWidgetCount > 1) {
 
         // if root has no layout
         if ( !_.has( w, 'layout' ) ) {
@@ -90,57 +162,71 @@ try {
           log( 'no layout defined for multilayout', w.name )
         }
 
-      }
-
-      // check multi displays defined in displayMap or display
-      if ( _.has( w, 'displayMap' ) || _.isObject( w.display ) ) {
-        if ( _.isObject( w.display ) ) {
-          // default displayMap to display
-          if ( !_.isEmpty( w.displayMap ) ) {
-            console.log( 'display takes precedence over display map: ', w.name )
-          }
-          w.displayMap = w.display;
-        } else if ( _.isString( w.display ) ) {
-          // apply display to all displayMap children without display
-          _.forIn( w.displayMap, function ( d ) {
-            if ( !_has( d, 'display' ) ) {
-              d.display = w.display;
-            }
-          } );
+      } else {
+        // assume single widget, check for layout      // Make sure all layouts are valid
+        if ( _.has(w.layout) && isLayout(w.layout) ) {
+          log('valid layout', w.name, w.layout)
+        } else if ( !_.isUndefined(w.layout) ) {
+          log('invalid layout', w.name, w.layout)
         }
       }
 
 
-      //TODO: auto populate display to displayMap children
-      //ensure valid Displays
-      if ( _.has( w, 'display' ) && _.has( w, 'displayMap' ) ) {
+
+      //ensure valid Displays - set display defaults == deep Defaults
+      if ( _.isString( w, 'display' ) && _.has( w, 'displayMap' ) ) {
         var disp = w.display;
         _.forIn( w.displayMap, function ( v, k ) {
           var dMap = w.displayMap[ k ];
           if ( _.has( dMap, 'display' ) ) {
 
-            checkDisplay( dMap.display );
+            if ( !isDisplay( dMap.display ) ){
+                log('invalid display', w.name, dMap.display)
+            } else {
+              log ('display',  w.name, dMap.display)
+            }
 
             // override
             return;
           } else {
-            log( 'hardcoding', k, 'display as', disp )
+            //auto populate display to displayMap children
+            log( 'default displayMap >', k+'.display as', disp )
             dMap.display = disp;
           }
         } )
       }
 
+
+      // check the controls in displayMap (makes more sense for user)
+      _.forIn(w.displayMap, function(v, k){
+        if ( _.has( v, 'control') ) {
+          checkControl(v.control)
+        }
+      })
+ 
+ // TODO: Check services
+  var serviceDiff = _.difference(w.services, serviceNames)
+  if ( serviceDiff.length > 0 ){
+    log('Services not found', serviceDiff)
+  }
+
   })
+  // Make sure all displays are valid
+function checkControl( d ) {
+  if ( isControl(d) ){
+    log( 'control', d )
+  } else {
+    log( 'invalid control', d )
+  }
+}
     // Make sure all displays are valid
   function checkDisplay( d ) {
     if ( isDisplay( d ) ) {
       log( 'display', d )
     } else {
-      log( 'no display', d )
+      log( 'invalid display', d )
     }
   }
-  // Make sure all controls are valid
-  // Make sure all layouts are valid
   // Make sure all filters are valid
 
   function isDisplay( d ) {
@@ -154,10 +240,16 @@ try {
   function isControl( c ) {
     var cs = [ 'input', 'keyboard', 'button', 'switch', 'range', 'x', 'y',
   'radial', 'radio', 'select', 'video', 'audio', 'label', 'picture'
-   , 'upload' ]
+   , 'upload', 'joystick' ]
 
     return ( cs.indexOf( c ) > -1 )
 
+  }
+
+  function isLayout(l){
+    var ls = [ 'overlap', 'grid', 'stack', 'books', 'left', 'centered', 'right', 'cross' ]
+
+    return (ls.indexOf(c) > -1)
   }
   // tests built
 
@@ -178,17 +270,17 @@ try {
     }
   }
 
-  _.forIn( widgetTests.type, function ( v, k ) {
-    if ( v === false ) {
-      log( 'no type. setting defaults [:]=>', k + '.type', '=', k )
-        //enable type defaults based on key name
-      if ( _.has( widgets, k ) ) {
-        widgets[ k ].type = k;
-      }
-    }
-  } );
-
 
 } catch ( e ) {
   console.error( 'Config Validation Error', e, e.stack );
+}
+
+// console.log( require('util').inspect(config, { depth: null}) )
+module.exports = {
+  validate : function(w){
+
+  },
+  populate : function (w) {
+
+  }
 }
