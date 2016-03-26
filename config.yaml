@@ -117,21 +117,25 @@ widgets:
       - recent
       - last-week
     display: line
-    displayMap:
+    displayList:
       # Matrix.type('power').send({mvhLeft: 1123, estimate: 90, usage: 110 })
-      mvhLeft:
+      -
         label : millawatt hours remaining
         color: red
         filter: round
-      estimate:
+        type: mvhLeft
+      -
         label : minutes remaining estimate
         color: green
         filter: round
-      usage:
+        type: estimate
+
+      -
         label: current load
         color: brown
         weight: 2
         filter: round
+        type: usage
 
   performance:
     type: engine
@@ -139,25 +143,27 @@ widgets:
     display : gauge
     filter: now
     layout: books
-    displayMap:
+    displayList:
       # Matrix.type('engine').send({rpm: 1123, efficieny: 0.23, torque: 110.12 })
-      - rpm:
-          label: rpm
-          color: lightgreen
-      - efficiency:
-          label: efficiency %
-          color: lightgreen
-          filter: percentage
-      - torque:
-          label: Torque lbs
-          color: lightgreen
-          filter: fixed(1)
+      -
+        label: rpm
+        color: lightgreen
+        type: rpm
+      -
+        label: efficiency %
+        color: lightgreen
+        filter: percentage
+        type: efficiency
+      -
+        label: Torque lbs
+        color: lightgreen
+        filter: fixed(1)
+        type: torque
 
 
   heat:
     type: temperature
     layout: grid
-    service: pooping
     filter:
       - recent
       - now
@@ -213,12 +219,12 @@ widgets:
     label: Power Level
     layout: books
     displayMap:
-      powerBar:
+      -
         type: power
         display: bar
         theme: rainbow
         size: 1
-      powerHistory:
+      -
         type: power
         display: line
         filter: last-week
