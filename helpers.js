@@ -65,12 +65,13 @@ function nKey( obj ) {
   }
 }
 
-// splits object by key into an array of objects
-function objIntoArray(obj){
+// splits object by key into a collection
+function objIntoCollection(obj){
   var a = [];
+  var i = 0;
   for (var o in obj){
     var o2 = {};
-    o2[o] = obj[o];
+    _.extend(o2, { name: o }, obj[o]);
     a.push(o2);
   }
   return a;
@@ -101,6 +102,6 @@ module.exports = {
   isLayout: isLayout,
   mapTruth: mapTruth,
   nKey: nKey,
-  objIntoArray: objIntoArray,
+  objIntoCollection: objIntoCollection,
   collectionIntoObj: collectionIntoObj
 }

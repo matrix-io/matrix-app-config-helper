@@ -121,6 +121,11 @@ widgets:
     display:
       - gauge
       - map
+
+  pooping:
+    hidden: true
+    type: pooper
+
   faceScanList:
     type: face
     layout: books
@@ -225,8 +230,8 @@ widgets:
     display: radial
     control: joystick
     # vvv default
-    controlMap:
-      - joystick: joystick
+    #controlMap:
+    #- joystick: joystick
 
   controls:
     label: Robot Controls
@@ -234,7 +239,7 @@ widgets:
     layout: cross
     # these events trigger `control-up` in app
     # are written as "^" in button
-    controlEventMap:
+    controlEventList:
       ^ : up
       v : down
       o : stop
