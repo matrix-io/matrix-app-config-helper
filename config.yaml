@@ -16,7 +16,7 @@
 # pie-chart
 # label
 #
-## Filters
+## Formats
 # round
 # percent
 # fixed
@@ -24,6 +24,7 @@
 # mean
 # max
 # min
+# count
 #
 ## Layouts
 # overlap
@@ -34,6 +35,8 @@
 # centered
 # right
 # cross +
+# column
+# row
 
 #
 ## Controls
@@ -52,8 +55,33 @@
 # picture
 # upload
 
+# App Information for Store
+name: testConfig
+description: The thing
+images:
+  - http://someimage.com
+  - http://youtube.com
+  - img.png
+imagesDir: assets
+icon:
+  - assets/icon.png
+keywords: test, keyword
+
+sensors:
+  - temperature
+  - camera
+
+integrations:
+  - nest
+  - robovote
+
+crosstalk:
+  - event1
+  - event2
+
 configuration:
   foo: bar
+
 
 data-types:
   - test
@@ -152,12 +180,12 @@ widgets:
       -
         label: efficiency %
         color: lightgreen
-        filter: percentage
+        format: percentage
         type: efficiency
       -
         label: Torque lbs
         color: lightgreen
-        filter: fixed(1)
+        format: fixed(1)
         type: torque
 
 
@@ -218,7 +246,7 @@ widgets:
   battery:
     label: Power Level
     layout: books
-    displayMap:
+    displayList:
       -
         type: power
         display: bar
@@ -257,7 +285,7 @@ widgets:
     label : On
     layout: stack
     #alternative to display
-    displayMap:
+    displayList:
       -
         label: On
         display: indicator

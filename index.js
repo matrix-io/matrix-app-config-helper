@@ -2,15 +2,90 @@ var fs = require( 'fs' );
 var yaml = require( 'js-yaml' )
 var _ = require( 'lodash' )
 var log = console.log;
+var util = require('./helpers.js')
+
+var screens, widgets, services, formats, serviceNames, formatNames, widgetNames, screenNames,screenWidgetList;
+
+function Widget(name, obj){
+  var self = this;
+  self.name = name;
+
+  obj = module.exports.populate(obj, name );
+  module.exports.validate(obj);
 
 
-// console.log( require('util').inspect(config, { depth: null}) )
+  return self;
+}
+
+function Config(obj){
+  var self = this;
+
+  self.screens = obj.screens;
+  self.widgets = obj.widgets;
+  self.services = obj.services;
+  self.filters = obj.filters;
+
+
+  self.serviceNames = Object.keys( self.services );
+  self.filterNames = Object.keys( self.filters );
+  self.widgetNames = Object.keys( self.widgets );
+  self.screenNames = Object.keys( self.screens );
+
+  return self;
+}
+
 module.exports = {
+  read: function( fileName ){
+    fileName = fileName || 'config.yaml';
+
+    try {
+
+      var config = yaml.safeLoad( fs.readFileSync(fileName) );
+
+      console.log(config.widgets);
+      // check that all screens are widgets
+      var widgetList = Object.keys( config.widgets );
+
+      screens = config.screens;
+      widgets = config.widgets;
+      services = config.services;
+      filters = config.filters;
+
+            serviceNames = Object.keys( services );
+            filterNames = Object.keys( filters );
+            widgetNames = Object.keys( widgets );
+            screenNames = Object.keys( screens );
+
+      screenWidgetList = _.flatten( _.map( screens, function ( v, k ) {
+        return _.flattenDeep( v );
+      } ) );
+      //
+      // console.log(screenWidgetList);
+      var widgetDiff = _.difference( screenWidgetList, widgetList );
+      // console.log(widgetDiff)
+      if ( widgetDiff.length > 0 ) {
+        throw new Error( 'Screens Missing Widget Definition: ' + widgetDiff.join( ', ' ) )
+      }
+
+      // log(widgets);
+
+      // check widgets for things
+      _.forIn( widgets, function ( w, name ) {
+
+          console.log(new Widget(name, w));
+
+        })
+
+    } catch ( e ) {
+      console.error( 'Config Validation Error', e, e.stack );
+    }
+
+  },
   validate: function ( w ) {
     // VALIDATE OBJECT LOGIC
 
     // ensure multi-widgets have layout set
-    var subWidgetCount = nKey( w.displayList ) + nKey( w.controlEventMap );
+    var subWidgetCount = util.nKey( w.displayList ) + util.nKey( w.controlEventMap );
     if ( subWidgetCount > 1 ) {
 
       // if root has no layout
@@ -21,7 +96,7 @@ module.exports = {
 
     } else {
       // assume single widget, check for layout      // Make sure all layouts are valid
-      if ( _.has( w.layout ) && isLayout( w.layout ) ) {
+      if ( _.has( w.layout ) && util.isLayout( w.layout ) ) {
         log( 'valid layout', w.name, w.layout )
       } else if ( !_.isUndefined( w.layout ) ) {
         log( 'invalid layout', w.name, w.layout )
@@ -52,7 +127,7 @@ module.exports = {
       _.each( w.displayList, function ( k, i ) {
         var dMap = w.displayList[ i ];
         if ( _.has( dMap, 'display' ) ) {
-          if ( !isDisplay( dMap.display ) ) {
+          if ( !util.isDisplay( dMap.display ) ) {
             log( 'invalid display', w.name, dMap.display )
           } else {
             log( 'display', w.name, dMap.display )
@@ -67,7 +142,7 @@ module.exports = {
     // check the controls in displayList (makes more sense for user)
     _.forIn( w.displayList, function ( v, k ) {
       if ( _.has( v, 'control' ) ) {
-        checkControl( v.control )
+        util.checkControl( v.control )
       }
     } )
 
@@ -101,8 +176,12 @@ module.exports = {
     }
 
   },
+
+
+
+
   populate: function populateConfigObject ( w, name ) {
-    if ( w === null || nKey( w ) === 0 || _.isEmpty( w ) ) {
+    if ( w === null || util.nKey( w ) === 0 || _.isEmpty( w ) ) {
       log( name, 'is null' );
 
       // graciously allow existence
@@ -154,7 +233,7 @@ module.exports = {
         }
       } else if ( _.isString( w.control ) ) {
         // single control
-        if ( isControl( w.control ) ) {
+        if ( util.isControl( w.control ) ) {
           log( 'control registered:', w.name, w.control );
           // apply control
           _.forIn( w.controlEventMap, function ( v, k ) {
@@ -186,125 +265,9 @@ module.exports = {
         log( w.name, 'set type', dv.type )
       }
     } );
+
+    return w;
   }
 }
 
-
-try {
-
-  var config = yaml.safeLoad( fs.readFileSync( 'config.yaml' ) );
-  // TODO Config Validation
-
-  // console.log(config);
-  // check that all screens are widgets
-  var widgetList = Object.keys( config.widgets );
-
-  var screens = config.screens;
-  var widgets = config.widgets;
-  var services = config.services;
-  var filters = config.filters;
-
-  var serviceNames = Object.keys( services );
-  var filterNames = Object.keys( filters );
-  var widgetNames = Object.keys( widgets );
-  var screenNames = Object.keys( screens );
-
-  var screenWidgetList = _.flatten( _.map( screens, function ( v, k ) {
-    return _.flattenDeep( v );
-  } ) );
-  //
-  // console.log(screenWidgetList);
-  var widgetDiff = _.difference( screenWidgetList, widgetList );
-  // console.log(widgetDiff)
-  if ( widgetDiff.length > 0 ) {
-    throw new Error( 'Screens Missing Widget Definition: ' + widgetDiff.join( ', ' ) )
-  }
-
-  // empty key checklist to parse widget status
-  // widgets : { widget1 : false, widget2: false, ... }
-  var widgetCheckList = _.mapValues( widgets, function () {
-    return false
-  } );
-  var widgetTests = {};
-
-  // easy on the brain
-  widgetTests.type = widgetCheckList;
-  widgetTests.usage = widgetCheckList;
-  widgetTests.viz = widgetCheckList;
-
-  // log(widgets);
-
-  // check widgets for things
-  _.forIn( widgets, function ( w, name ) {
-
-      module.exports.populate( w, name )
-
-
-
-
-      module.exports.validate( w );
-
-    } )
-    // Make sure all displays are valid
-  function checkControl( d ) {
-    if ( isControl( d ) ) {
-      log( 'control', d )
-    } else {
-      log( 'invalid control', d )
-    }
-  }
-  // Make sure all displays are valid
-  function checkDisplay( d ) {
-    if ( isDisplay( d ) ) {
-      log( 'display', d )
-    } else {
-      log( 'invalid display', d )
-    }
-  }
-  // Make sure all filters are valid
-
-  function isDisplay( d ) {
-    var ds = [ 'line', 'bar', 'list', 'digit', 'list-group',
-   'gauge', 'list-details', 'indicator', 'radar', 'heat-map',
-    'map', 'pie-chart', 'label' ]
-
-    return ( ds.indexOf( d ) > -1 )
-  }
-
-  function isControl( c ) {
-    var cs = [ 'input', 'keyboard', 'button', 'switch', 'range', 'x', 'y',
-  'radial', 'radio', 'select', 'video', 'audio', 'label', 'picture'
-   , 'upload', 'joystick' ]
-
-    return ( cs.indexOf( c ) > -1 )
-
-  }
-
-  function isLayout( l ) {
-    var ls = [ 'overlap', 'grid', 'stack', 'books', 'left', 'centered', 'right', 'cross' ]
-
-    return ( ls.indexOf( c ) > -1 )
-  }
-  // tests built
-
-  function mapTruth( v, k ) {
-    var o = {};
-    o[ k ] = ( v === true )
-    return o;
-  }
-
-  function nKey( obj ) {
-    if ( _.isUndefined( obj ) ) {
-      return 0
-    } else
-    if ( _.isString( obj ) ) {
-      return 1
-    } else {
-      return Object.keys( obj ).length
-    }
-  }
-
-
-} catch ( e ) {
-  console.error( 'Config Validation Error', e, e.stack );
-}
+module.exports.read();
