@@ -218,7 +218,7 @@ widgets:
   battery:
     label: Power Level
     layout: books
-    displayMap:
+    displayList:
       -
         type: power
         display: bar
@@ -257,7 +257,7 @@ widgets:
     label : On
     layout: stack
     #alternative to display
-    displayMap:
+    displayList:
       -
         label: On
         display: indicator

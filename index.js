@@ -20,7 +20,7 @@ module.exports = {
       }
 
     } else {
-      // assume single widget, check for layout      // Make sure all layouts are valid
+      // assume no list, check for layout      // Make sure all layouts are valid
       if ( _.has( w.layout ) && isLayout( w.layout ) ) {
         log( 'valid layout', w.name, w.layout )
       } else if ( !_.isUndefined( w.layout ) ) {
@@ -78,11 +78,9 @@ module.exports = {
     }
 
 
-
-    // SETUP TESTS
     // check for interface / display
     if ( screenWidgetList.indexOf( w.name ) > -1 ) {
-      log( 'widget has screen ', w.name )
+      log(w.name, 'widget has screen assigned' )
     } else {
       log( 'widget is unused in screen', w.name )
     }
@@ -115,7 +113,7 @@ module.exports = {
       return;
     } else {
       //add name attrib
-      log( name, 'named' )
+      log( name, 'widget named' )
       w.name = name;
     }
 
