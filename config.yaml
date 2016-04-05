@@ -16,7 +16,7 @@
 # pie-chart
 # label
 #
-## Filters
+## Formats
 # round
 # percent
 # fixed
@@ -24,6 +24,7 @@
 # mean
 # max
 # min
+# count
 #
 ## Layouts
 # overlap
@@ -34,6 +35,8 @@
 # centered
 # right
 # cross +
+# column
+# row
 
 #
 ## Controls
@@ -52,8 +55,33 @@
 # picture
 # upload
 
+# App Information for Store
+name: testConfig
+description: The thing
+images:
+  - http://someimage.com
+  - http://youtube.com
+  - img.png
+imagesDir: assets
+icon:
+  - assets/icon.png
+keywords: test, keyword
+
+sensors:
+  - temperature
+  - camera
+
+integrations:
+  - nest
+  - robovote
+
+crosstalk:
+  - event1
+  - event2
+
 configuration:
   foo: bar
+
 
 data-types:
   - test
@@ -93,6 +121,11 @@ widgets:
     display:
       - gauge
       - map
+
+  pooping:
+    hidden: true
+    type: pooper
+
   faceScanList:
     type: face
     layout: books
@@ -152,12 +185,12 @@ widgets:
       -
         label: efficiency %
         color: lightgreen
-        filter: percentage
+        format: percentage
         type: efficiency
       -
         label: Torque lbs
         color: lightgreen
-        filter: fixed(1)
+        format: fixed(1)
         type: torque
 
 
@@ -197,8 +230,8 @@ widgets:
     display: radial
     control: joystick
     # vvv default
-    controlMap:
-      - joystick: joystick
+    #controlMap:
+    #- joystick: joystick
 
   controls:
     label: Robot Controls
@@ -206,7 +239,7 @@ widgets:
     layout: cross
     # these events trigger `control-up` in app
     # are written as "^" in button
-    controlEventMap:
+    controlEventList:
       ^ : up
       v : down
       o : stop
