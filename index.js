@@ -4,9 +4,11 @@ fs = require( 'fs' );
 yaml = require( 'js-yaml' )
 _ = require( 'lodash' )
 log = console.log;
-util = require('./helpers.js')
 
-config = require('./config.js')
-Widget = require('./Widget.js');
 
-config.read();
+var config = require('./config.js')
+
+module.exports = {
+  read: config.read,
+  validate: config.validate
+}

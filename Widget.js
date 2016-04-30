@@ -1,29 +1,35 @@
 var config = require('./config.js')
+var _ = require('lodash')
+var debug = debugLog('config-helper-widget')
+var util = require('./helpers.js')
 
 function Widget(name, obj){
-  log('\n> widget init'.grey, name )
+  log();
+  debug('> widget init'.grey, name )
   var self = obj;
   self.name = name;
 
   obj = populate(obj, name);
   validate(obj);
 
-  log('< widget done'.grey, name )
+  debug('< widget done'.grey, name )
   return self;
 }
 
 module.exports = Widget;
+
+
 
 function populate(w, name){
 
   // SET DEFAULTS
   if ( !_.has( w, 'type' ) ) {
     w.type = name;
-    log( 'setting default type'.yellow, name + '.type =', w.type );
+    debug( 'setting default type'.yellow, name + '.type =', w.type );
   }
 
   if ( _.has(w,'display') && !_.isString(w.display) && _.has(w, 'displayList')){
-    console.log( w.name, 'display takes precedence over displayList'.yellow )
+    debug( w.name, 'display takes precedence over displayList'.yellow )
     w.displayList = w.display;
   } else if ( !_.isString(w.display) && !_.has(w, 'displayList')  && _.has(w, 'display')) {
     // populate obj without error
@@ -49,10 +55,10 @@ function populate(w, name){
       }
 
       if ( _.has( d, 'type' ) ) {
-        log( w.name, 'defined displayList: ', d.name+'.type', d.type  )
+        debug( w.name, 'defined displayList: ', d.name+'.type', d.type  )
       } else if ( !_.isUndefined(w.type) ) {
         d.type = w.type;
-        log( w.name, 'set displayList type'.yellow, d.name+'.type =',d.type )
+        debug( w.name, 'set displayList type'.yellow, d.name+'.type =',d.type )
       }
     })
   }
@@ -61,13 +67,13 @@ function populate(w, name){
   if ( _.has( w, 'control' ) || _.has( w, 'controlEventList' ) ) {
     if ( _.isObject( w.control ) ) {
       if ( _.has( w, 'controlEventList' ) ) {
-        log( 'control and controlEventList are both objects, defaulting to control' );
+        debug( 'control and controlEventList are both objects, defaulting to control' );
         w.controlEventList = control;
       }
     } else if ( _.isString( w.control ) ) {
       // single control
       if ( util.isControl( w.control ) ) {
-        log( 'control registered:', w.name, w.control );
+        debug( 'control registered:', w.name, w.control );
         // apply control
         _.forIn( w.controlEventList, function ( v, k ) {
           if ( _.isString( v ) ) {
@@ -80,7 +86,7 @@ function populate(w, name){
           }
         } )
       } else {
-        log( 'invalid control:', w.name, w.control );
+        debug( 'invalid control:', w.name, w.control );
       }
     }
   }
@@ -92,15 +98,15 @@ function validate(w){
   // VALIDATE OBJECT LOGIC
 
   if ( _.isString(w.displayList)){
-    console.log('Display List is not an array or an object'.red);
+    debug('Display List is not an array or an object'.red);
   }
 
   // make sure data type is defined - deep display map
   _.each( w.displayList, function ( di ) {
     if ( _.has( di, 'type' ) ) {
-      log( w.name, ':', di.name, '> type', di.type  )
+      debug( w.name, ':', di.name, '> type', di.type  )
     } else if ( !_.isUndefined(w.type) ) {
-      log( w.name, 'no displayList type'.yellow, di.name+'.type =',di.type )
+      debug( w.name, 'no displayList type'.yellow, di.name+'.type =',di.type )
     }
   });
 
@@ -112,22 +118,22 @@ function validate(w){
 
     // if root has no layout
     if ( !_.has( w, 'layout' ) ) {
-      log('no layout defined for multilayout'.red )
+      debug('no layout defined for multilayout'.red, w.name.yellow )
     }
 
     _.each( _.concat(w.displayList, w.controlEventList ), function(d){
 
       if ( _.has(d,'layout') && !util.isLayout(d.layout)){
-        log('Invalid MultiLayout', d.layout);
+        debug('Invalid MultiLayout', d.layout);
       }
     });
 
   } else {
     // assume single widget, check for layout      // Make sure all layouts are valid
     if ( _.has( w.layout ) && util.isLayout( w.layout ) ) {
-      log( 'valid layout', w.name, w.layout )
+      debug( 'valid layout', w.name, w.layout )
     } else if ( !_.isUndefined(w.layout) && !util.isLayout(w.layout) ){
-      log( 'invalid layout'.red, w.name, ':', w.layout )
+      debug( 'invalid layout'.red, w.name, ':', w.layout )
     }
   }
 
@@ -140,13 +146,13 @@ function validate(w){
       var dList = w.displayList[ i ];
       if ( _.has( dList, 'display' ) ) {
         if ( !util.isDisplay( dList.display ) ) {
-          log( 'invalid display', w.name, dList.display )
+          debug( 'invalid display', w.name, dList.display )
         } else {
-          log( 'display', w.name, dList.display )
+          debug( 'display', w.name, dList.display )
         }
       } else {
         dList.display = disp;
-        log('displayMap display', dList.type, dList.display )
+        debug('displayMap display', dList.type, dList.display )
       }
     });
   }
@@ -161,13 +167,13 @@ function validate(w){
   // TODO: Check services
   var serviceDiff = _.difference( w.services, config.serviceNames )
   if ( serviceDiff.length > 0 ) {
-    log( 'Services not found', w.name, serviceDiff )
+    debug( 'Services not found', w.name, serviceDiff )
   }
 
   // check for interface / display
   var widgetSpot = config.screenWidgetList.indexOf( w.name );
   if ( widgetSpot === -1 ) {
-    log( 'widget is unused'.red)
+    debug( 'widget is unused'.red)
   }
 
 
@@ -177,9 +183,9 @@ function validate(w){
   _.has( w, 'control' ) || _.has( w, 'controlMap' ) ) ) {
 
     if ( !_.has( w, 'hidden' ) || w.hidden === false ) {
-      console.log( 'widget with no display or control defined'.red );
+      debug( 'widget with no display or control defined'.red );
     } else {
-      console.log( 'invisbility detected'.green )
+      debug( 'invisbility detected'.green )
     }
   }
 }

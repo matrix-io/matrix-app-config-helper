@@ -58,6 +58,7 @@
 # App Information for Store
 name: testConfig
 description: The thing
+configVersion: 1.0
 images:
   - http://someimage.com
   - http://youtube.com

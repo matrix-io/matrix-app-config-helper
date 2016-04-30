@@ -1,3 +1,4 @@
+var debug = debugLog('config-helper')
 var _ = require('lodash')
 // Make sure all filters are valid
 
@@ -34,18 +35,27 @@ function isFormat( f ){
 // Make sure all displays are valid
 function checkControl( d ) {
   if ( isControl( d ) ) {
-    console.log( 'control', d )
+    debug( 'control', d )
   } else {
-    console.log( 'invalid control', d )
+    debug( 'invalid control', d )
   }
 }
 // Make sure all displays are valid
 function checkDisplay( d ) {
   if ( isDisplay( d ) ) {
-    console.log( 'display', d )
+    debug( 'display', d )
   } else {
-    console.log( 'invalid display', d )
+    debug( 'invalid display', d )
   }
+}
+
+function checkRequiredKeys( obj, req ){
+  var reqKeys = req || [ 'name', 'configVersion','description','keywords' ];
+  reqKeys.forEach(function(k){
+    if (!_.has(obj, k)){
+      console.error('Configuration has no'.red, k)
+    }
+  })
 }
 
 function mapTruth( v, k ) {
@@ -102,6 +112,7 @@ module.exports = {
   isLayout: isLayout,
   mapTruth: mapTruth,
   nKey: nKey,
+  keyCheck: checkRequiredKeys,
   objIntoCollection: objIntoCollection,
   collectionIntoObj: collectionIntoObj
 }
