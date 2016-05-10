@@ -57,8 +57,9 @@
 
 # App Information for Store
 name: testConfig
+version: 0
+configVersion: 2
 description: The thing
-configVersion: 1.0
 images:
   - http://someimage.com
   - http://youtube.com
@@ -67,10 +68,6 @@ imagesDir: assets
 icon:
   - assets/icon.png
 keywords: test, keyword
-
-sensors:
-  - temperature
-  - camera
 
 integrations:
   - nest
@@ -84,15 +81,21 @@ configuration:
   foo: bar
 
 
-data-types:
-  - test
-  - face
-  - power
-  - performance
-  - temperature
-  - video
+dataTypes:
+  test: 'string'
+  face: 'object'
+  power: 'float'
+  performance: 'float'
+  temperature: 'float'
+  control: 'float'
+  speed: 'float'
+
+sensors:
+  - camera
   - control
   - speed
+  - temperature
+  - power
 
 # screens are comprised of widgets
 screens:
@@ -122,11 +125,6 @@ widgets:
     display:
       - gauge
       - map
-
-  pooping:
-    hidden: true
-    type: pooper
-
   faceScanList:
     type: face
     layout: books
