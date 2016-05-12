@@ -77,10 +77,12 @@ crosstalk:
   - event1
   - event2
 
+# these variables are made available to the app
 configuration:
   foo: bar
 
 
+# explicit
 dataTypes:
   test: 'string'
   face: 'object'
@@ -90,6 +92,12 @@ dataTypes:
   control: 'float'
   speed: 'float'
 
+# implicit declaration assumes objects
+# dataTypes:
+#   - test
+#   - face
+
+# these sensors are used in the app
 sensors:
   - camera
   - control
@@ -97,7 +105,7 @@ sensors:
   - temperature
   - power
 
-# screens are comprised of widgets
+# screens are comprised of widgets, intended for multiple dashboards
 screens:
   main:
 # Row 1
@@ -118,10 +126,13 @@ screens:
   training:
     - faceScanList
 
-
+# referenced by name from screens
 widgets:
   noLayout:
+    # matrix.type('test') maps to this
     type: test
+    # matrix.type('test').send( foo: 123 )
+    data: foo
     display:
       - gauge
       - map
