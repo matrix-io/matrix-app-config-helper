@@ -1,6 +1,6 @@
 var config = require('./config.js')
 var _ = require('lodash')
-var debug = debugLog('config-helper-widget')
+var debug = require('debug')('config-helper-widget')
 var util = require('./helpers.js')
 
 function Widget(name, obj){
@@ -26,6 +26,14 @@ function populate(w, name){
   if ( !_.has( w, 'type' ) ) {
     w.type = name;
     debug( 'setting default type'.yellow, name + '.type =', w.type );
+  }
+
+  // Make single keys ( 'a,b,c' ) into array
+  if ( _.has(w, 'keys') || _.isString(w.keys) ){
+    // remove whitespace and standardize
+    w.keys = w.keys.split(',').map(function(s){ return s.trim().toLowerCase() });
+  } else if ( _.has(w, 'key')) {
+    w.keys = [ w.key ];
   }
 
   if ( _.has(w,'display') && !_.isString(w.display) && _.has(w, 'displayList')){

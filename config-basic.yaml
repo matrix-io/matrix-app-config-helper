@@ -1,1 +1,42 @@
-8b5cd2356b6868874b14015e1f816942db3f8bd1
+
+# NOTE: When updating this, update config-basic in config-helper repo
+
+# App Information for Store
+name: monitor
+version: 1
+configVersion: 2
+description: Matrix stats
+
+dataTypes:
+  - device
+  - monitor
+
+# screens are comprised of widgets
+screens:
+  # Row 1
+  - - info
+  # Row 2
+  - - cpuChart
+  # Row 3
+  - - cpu
+    - memory
+
+widgets:
+  info:
+    type: device
+    display: list-group
+  cpuChart:
+    type: monitor
+    key: cpu
+    display: line
+    label: CPU Chart
+  cpu:
+    type: monitor
+    key: cpu
+    display: digit
+    format: round
+  memory:
+    type: monitor
+    key: memory
+    display: digit
+    format: round

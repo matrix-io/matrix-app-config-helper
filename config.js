@@ -1,7 +1,8 @@
 var util = require('./helpers.js');
 
-var debug = debugLog('config-helper')
+var debug = require('debug')('config-helper')
 
+var dataTypeRegex = /(string|str|s|object|obj|o|float|fl|f|integer|int|i)/;
 
 module.exports = {
   read: function( fileName ){
@@ -29,6 +30,22 @@ function validate( config ){
     debug('Desc:', config.description);
     debug('Version:', config.configVersion);
     debug('Keywords:', config.keywords);
+
+    // set Datatype object defaults in case of array
+    if ( _.isArray(config.dataTypes) ){
+      config.dataTypes = _.fromPairs(
+        _.map( config.dataTypes, function(t){
+        return [t, 'object']
+      }))
+    }
+
+    debug('DataTypes:', config.dataTypes);
+
+    _.each(config.dataTypes, function(t, k){
+      if ( t.match(dataTypeRegex).length === 0 ) {
+        console.error('Bad Data Type: %s for %s', t, k)
+      }
+    })
 
     // debug(config.widgets);
     // check that all screens are widgets

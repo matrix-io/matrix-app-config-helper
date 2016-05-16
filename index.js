@@ -5,8 +5,16 @@ yaml = require( 'js-yaml' )
 _ = require( 'lodash' )
 log = console.log;
 
+if (process.argv[2] === 'test'){
+  process.env['DEBUG'] = "*";
+}
 
 var config = require('./config.js')
+
+if (process.argv[2] === 'test'){
+  console.log( require('util').inspect( config.validate(config.read(process.argv[3])), {depth: null}));
+}
+
 
 module.exports = {
   read: config.read,

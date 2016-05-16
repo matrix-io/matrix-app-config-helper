@@ -1,4 +1,4 @@
-var debug = debugLog('config-helper')
+var debug = require('debug')('config-helper')
 var _ = require('lodash')
 // Make sure all filters are valid
 

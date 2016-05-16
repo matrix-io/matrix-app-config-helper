@@ -1,4 +1,10 @@
 
+## Data Types
+# string / str / s
+# object / obj / o
+# float / fl / f
+# integer / int / i
+
 # ####
 ## Displays
 #
@@ -131,8 +137,8 @@ widgets:
   noLayout:
     # matrix.type('test') maps to this
     type: test
-    # matrix.type('test').send( foo: 123 )
-    data: foo
+    # matrix.type('test').send( {foo: 123} )
+    key: foo
     display:
       - gauge
       - map
@@ -155,6 +161,7 @@ widgets:
   powerBig:
     type: power
     layout: overlap
+    keys: voltage, watts, temperature
     filter:
       - now
       - recent
@@ -186,6 +193,7 @@ widgets:
     display : gauge
     filter: now
     layout: books
+    keys: temperature, rpm
     displayList:
       # Matrix.type('engine').send({rpm: 1123, efficieny: 0.23, torque: 110.12 })
       -
