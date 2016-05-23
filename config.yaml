@@ -350,7 +350,8 @@ filters:
 
 services:
   vehicle:
-    engine: detection
+    engine: vehicle
+    type: vehicle
     engineParams:
       zones:
       - exitZone:
@@ -365,7 +366,8 @@ services:
       speedThresh : 45,
       nightMode: dynamic
   face:
-    engine: count
+    engine: face-recognition
+    type: face
     engineParams:
       minDwell : 1
       minHappy : 0.1

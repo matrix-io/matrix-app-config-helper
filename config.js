@@ -1,4 +1,5 @@
 var util = require('./helpers.js');
+var _ = require('lodash')
 
 var debug = require('debug')('config-helper')
 
