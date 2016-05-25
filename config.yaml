@@ -87,7 +87,6 @@ crosstalk:
 configuration:
   foo: bar
 
-
 # explicit
 dataTypes:
   test: 'string'

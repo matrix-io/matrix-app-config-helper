@@ -18,5 +18,12 @@ if (process.argv[2] === 'test'){
 
 module.exports = {
   read: config.read,
-  validate: config.validate
+  validate: config.validate,
+  regex: {
+    string :/(string|str|s)/,
+    object :/(object|obj|o)/,
+    float :/(float|fl|f)/,
+    integer :/(integer|int|i)/,
+    boolean :/(b|bool|boolean)/,
+  }
 }

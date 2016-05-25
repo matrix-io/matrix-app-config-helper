@@ -8,8 +8,14 @@ configVersion: 2
 description: Matrix stats
 
 dataTypes:
-  - device
-  - monitor
+  device:
+    os_hostname: string
+    os_type: string
+    os_platform: string
+    os_arch: string
+  monitor:
+    cpu: float
+    ram: float
 
 # screens are comprised of widgets
 screens:
@@ -35,8 +41,10 @@ widgets:
     key: cpu
     display: digit
     format: round
+    label: cpu
   memory:
     type: monitor
     key: memory
     display: digit
     format: round
+    label: memory
