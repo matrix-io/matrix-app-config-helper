@@ -51,7 +51,7 @@
 # button
 # switch
 # range
-# x,y
+# xy
 # radial
 # radio
 # select
@@ -89,13 +89,16 @@ configuration:
 
 # explicit
 dataTypes:
-  test: 'string'
-  face: 'object'
-  power: 'float'
-  performance: 'float'
-  temperature: 'float'
-  control: 'float'
-  speed: 'float'
+  test: string
+  face:
+    age: integer
+    smile: float
+    gender: integer
+  power: float
+  performance: float
+  temperature: float
+  control: float
+  speed: float
 
 # implicit declaration assumes objects
 # dataTypes:
@@ -234,9 +237,9 @@ widgets:
 
 
   camera:
-   type: video,
+   type: speed,
    # Label on Display
-   label: Robot View,
+   label: Robot View
    display: video
    services:
     - vehicle
