@@ -3,12 +3,12 @@ var _ = require('lodash')
 
 var debug = require('debug')('config-helper')
 
-var dataTypeRegex = /(string|str|s|object|obj|o|float|fl|f|integer|int|i|b|bool|boolean)/;
-var stringRegex = /(string|str|s)/;
-var objectRegex = /(object|obj|o)/;
-var floatRegex = /(float|fl|f)/;
-var integerRegex = /(integer|int|i)/;
-var booleanRegex = /(b|bool|boolean)/;
+var dataTypeRegex = /^(string|str|s|object|obj|o|float|fl|f|integer|int|i|b|bool|boolean)$/;
+var stringRegex = /^(string|str|s)$/;
+var objectRegex = /^(object|obj|o)$/;
+var floatRegex = /^(float|fl|f)$/;
+var integerRegex = /^(integer|int|i)$/;
+var booleanRegex = /^(b|bool|boolean)$/;
 
 module.exports = {
   read: function( fileName ){
