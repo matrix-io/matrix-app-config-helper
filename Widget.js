@@ -28,12 +28,17 @@ function populate(w, name){
     debug( 'setting default type'.yellow, name + '.type =', w.type );
   }
 
+
   // Make single keys ( 'a,b,c' ) into array
   if ( _.has(w, 'keys') || _.isString(w.keys) ){
     // remove whitespace and standardize
     w.keys = w.keys.split(',').map(function(s){ return s.trim().toLowerCase() });
   } else if ( _.has(w, 'key')) {
     w.keys = [ w.key ];
+  } else {
+    // no keys, default to value
+    debug('no key defined'.yellow, name + '.keys = ["value"]')
+    w.keys = [ 'value' ]
   }
 
   if ( _.has(w,'display') && !_.isString(w.display) && _.has(w, 'displayList')){
@@ -144,6 +149,11 @@ function validate(w){
       debug( 'invalid layout'.red, w.name, ':', w.layout )
     }
   }
+
+  // this isn't right
+    if ( _.has(w, 'display') && _.has(w, 'control') ){
+      debug('dual mode: display and control'.red , w.name);
+    }
 
 
   //ensure displayList displays are valid - set display defaults == deep Defaults

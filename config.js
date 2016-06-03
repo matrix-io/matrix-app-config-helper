@@ -57,7 +57,7 @@ function validate( config ){
           }
         })
       } else {
-        if ( !_.isNull(t) && k.match(dataTypeRegex).length === 0 ) {
+        if ( !_.isNull(t) && t.match(dataTypeRegex).length === 0 ) {
           console.error('Bad Data Type: %s for %s', t, k)
         }
       }
