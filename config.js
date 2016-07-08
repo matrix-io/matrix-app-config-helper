@@ -10,6 +10,8 @@ var floatRegex = /^(float|fl|f)$/;
 var integerRegex = /^(integer|int|i)$/;
 var booleanRegex = /^(b|bool|boolean)$/;
 
+var sensorRegex = /^(temperature|gyroscope|humidity|microphone|camera|pressure|accelerometer|compass|uv)$/;
+
 module.exports = {
   read: function( fileName ){
     fileName = fileName || 'config.yaml';
@@ -106,6 +108,26 @@ function validate( config ){
       })
     }
     //#end widget block
+
+    if ( _.has(config,'services')){
+      _.each( config.services, function(s){
+        if ( _.has(s, 'engine') ){
+          // standardize zone to zones
+          if (_.has(s, 'engineParams.zone')){
+            s.engineParams.zones = s.engineParams.zones || []
+            s.engineParams.zones.push(s.engineParams.zone);
+          }
+        }
+      })
+    }
+
+    if ( _.has(config, 'sensors')){
+      _.each(config.sensors, function(s){
+        if ( _.isNull(s.match(sensorRegex))) {
+          console.warn(s, 'is not a proper sensor');
+        }
+      })
+    }
 
       config.validated = true;
       debug('=========== CONFIG VALIDATE ============='.blue)
