@@ -83,6 +83,15 @@ crosstalk:
   - event1
   - event2
 
+  # these sensors are used in the app
+sensors:
+  - camera
+  - control
+  - speed
+  - temperature
+  - power
+
+
 # these variables are made available to the app
 configuration:
   foo: bar
@@ -105,13 +114,6 @@ dataTypes:
 #   - test
 #   - face
 
-# these sensors are used in the app
-sensors:
-  - camera
-  - control
-  - speed
-  - temperature
-  - power
 
 # screens are comprised of widgets, intended for multiple dashboards
 screens:

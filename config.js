@@ -122,9 +122,10 @@ function validate( config ){
     }
 
     if ( _.has(config, 'sensors')){
-      _.each(config.sensors, function(s){
+      _.each(config.sensors, function(s, i){
         if ( _.isNull(s.match(sensorRegex))) {
           console.warn(s, 'is not a proper sensor');
+          config.sensors = _.without(config.sensors, s);
         }
       })
     }
