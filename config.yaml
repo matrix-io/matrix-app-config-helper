@@ -93,7 +93,7 @@ sensors:
 
 
 # these variables are made available to the app
-configuration:
+settings:
   foo: bar
 
 # explicit
