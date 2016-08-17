@@ -4,7 +4,8 @@
   "description": "MatrixOS Application Configuration Helper Utility - Makes sure the config file is valid, and adds defaults. ",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/entry.test.js"
+    "test": "mocha test/entry.test.js",
+    "sync": "rsync -e ssh --progress *.js pi@m:~/mos/node_modules/matrix-app-config-helper"
   },
   "keywords": [
     "matrix-os",

@@ -14,6 +14,22 @@ var booleanRegex = /^(b|bool|boolean)$/;
 var sensorRegex = /^(temperature|gyroscope|humidity|microphone|camera|pressure|accelerometer|compass|uv)$/;
 
 module.exports = {
+  parsePolicyFromConfig: function(config){
+    // get rid of non config related info
+    var write = {};
+    var s = config;
+    _.pick(s, ['sensors', 'integrations', 'services', 'events']);
+
+    _.each(s, function (items, title) {
+      write[title] = {};
+      console.log(title.grey, ':', items.join(' '))
+      _.each(items, function (item) {
+        write[title][item] = false;
+      })
+    })
+
+    return write;
+  },
   read: function( fileName ){
     fileName = fileName || 'config.yaml';
     var config;
@@ -60,7 +76,16 @@ function validateDataTypeStructure(root) {
 function validate( config ){
   debug('validate');
   try {
-    util.keyCheck(config);
+    var reqKeys = [ 'name', 'configVersion','description','keywords' ];
+    var errorKeys = [];
+    _.each(reqKeys, function(k){
+      if (!_.has(config, k)){
+        errorKeys.push(k);
+      }
+    })
+    if (errorKeys.length > 0){
+      throw new Error('configuration has no '.red + errorKeys.join(', '))
+    }
 
     debug('Name:', config.name);
     debug('Desc:', config.description);
@@ -138,12 +163,14 @@ function validate( config ){
       })
     }
 
-      config.validated = true;
-      debug('=========== CONFIG VALIDATE ============='.blue)
+    config.validated = true;
+    debug('=========== CONFIG VALIDATE ============='.blue)
 
-      return config;
+    return config;
 
   } catch ( e ) {
-    console.error( 'Config Validation Error', e, e.stack );
+    console.error( 'Config Validation Error', e.message );
+    debug( e.stack );
+    return false;
   }
 }
