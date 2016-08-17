@@ -4,6 +4,7 @@ var _ = require('lodash')
 var debug = require('debug')('config-helper')
 
 var dataTypeRegex = /^(string|str|s|object|obj|o|float|fl|f|integer|int|i|b|bool|boolean)$/;
+var dataTypeKeyRegex = /^([a-z0-9_]+)$/i; //Case insensitive alphanumeric and _
 var stringRegex = /^(string|str|s)$/;
 var objectRegex = /^(object|obj|o)$/;
 var floatRegex = /^(float|fl|f)$/;
@@ -29,6 +30,32 @@ module.exports = {
 
 }
 
+function validateStructure(root) {
+  var result = true;
+
+  if (_.isObject(root)) { // If it has nested values go over those
+    _.each(root, function (value, key) {
+      console.log("Checking key: ", key);
+      if (!key.toString().match(dataTypeKeyRegex)) {
+        console.log('Invalid key: ', key, ' Data types must only be named using letters, numbers and "_".');
+        result = false;
+      }
+      if (!validateStructure(root[key], key, value)) { 
+        result = false; //If any nested match fails, update result
+      }
+    });
+  } else {
+    console.log("Checking value: ", root);
+    if (!root.toString().match(dataTypeRegex)) {
+      console.log('Invalid value: ', root, ' Please provide a valid data type.');
+      result = false;
+    }
+  }
+
+  return result;
+}
+
+
 function validate( config ){
   debug('validate');
     try {
@@ -49,24 +76,11 @@ function validate( config ){
             // null means to interpret the data dynamically
             return [t, null]
           }))
-        }
+      }
 
-        debug('DataTypes:', config.dataTypes);
+      debug('DataTypes:', config.dataTypes);
+      validateStructure(config.dataTypes);
 
-        _.each(config.dataTypes, function(t, k){
-          if ( _.isObject(t) ){
-            // nested datatypes
-            _.each( t, function(ts, key) {
-              if ( !ts.match(dataTypeRegex) ){
-                console.error('Bad Data Type: ', key, ts);
-              }
-            })
-          } else {
-            if ( !_.isNull(t.match(dataTypeRegex)) && t.match(dataTypeRegex).length === 0 ) {
-              console.error('Bad Data Type: %s for %s', t, k)
-            }
-          }
-        })
     }
 
     // debug(config.widgets);
