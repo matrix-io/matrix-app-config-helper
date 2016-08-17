@@ -30,22 +30,23 @@ module.exports = {
 
 }
 
-function validateStructure(root) {
+// Validates keys and values matching their corresponding RegExps   
+function validateDataTypeStructure(root) {
   var result = true;
 
   if (_.isObject(root)) { // If it has nested values go over those
     _.each(root, function (value, key) {
-      console.log("Checking key: ", key);
+      debug('Checking key: ', key);
       if (!key.toString().match(dataTypeKeyRegex)) {
         console.log('Invalid key: ', key, ' Data types must only be named using letters, numbers and "_".');
         result = false;
       }
-      if (!validateStructure(root[key], key, value)) { 
+      if (!validateDataTypeStructure(root[key], key, value)) { 
         result = false; //If any nested match fails, update result
       }
     });
   } else {
-    console.log("Checking value: ", root);
+    debug('Checking value: ', root);
     if (!root.toString().match(dataTypeRegex)) {
       console.log('Invalid value: ', root, ' Please provide a valid data type.');
       result = false;
@@ -58,28 +59,21 @@ function validateStructure(root) {
 
 function validate( config ){
   debug('validate');
-    try {
+  try {
     util.keyCheck(config);
 
     debug('Name:', config.name);
     debug('Desc:', config.description);
     debug('Version:', config.configVersion);
     debug('Keywords:', config.keywords);
-
     //some apps just don't make data
     if ( _.has(config, 'dataTypes')){
-
-      // set Datatype object defaults in case of array
-      if ( _.isArray(config.dataTypes) ){
-        config.dataTypes = _.fromPairs(
-          _.map( config.dataTypes, function(t){
-            // null means to interpret the data dynamically
-            return [t, null]
-          }))
+      if (_.isArray(config.dataTypes) || _.isString(config.dataTypes)) {
+        throw new Error('dataTypes can not be a string nor an array.');
       }
 
       debug('DataTypes:', config.dataTypes);
-      validateStructure(config.dataTypes);
+      validateDataTypeStructure(config.dataTypes);
 
     }
 
