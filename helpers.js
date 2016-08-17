@@ -51,11 +51,15 @@ function checkDisplay( d ) {
 
 function checkRequiredKeys( obj, req ){
   var reqKeys = req || [ 'name', 'configVersion','description','keywords' ];
-  reqKeys.forEach(function(k){
+  var errorKeys = [];
+  _.each(reqKeys, function(k){
     if (!_.has(obj, k)){
-      console.error('Configuration has no'.red, k)
+      errorKeys.push(k);
     }
   })
+  if (errorKeys.length > 0){
+    throw new Error('configuration has no '.red + errorKeys.join(', '))
+  }
 }
 
 function mapTruth( v, k ) {
