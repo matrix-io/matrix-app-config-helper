@@ -65,7 +65,9 @@ function validate( config ){
 
     // debug(config.widgets);
     // check that all screens are widgets
-    var widgetList = Object.keys( config.widgets );
+    if ( _.has( config, 'widgets') ) {
+      var widgetList = Object.keys( config.widgets );
+    }
 
     var screens = module.exports.screens = config.screens || {};
     var widgets =module.exports.widgets = config.widgets || {};
