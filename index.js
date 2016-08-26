@@ -17,6 +17,7 @@ if (process.argv[2] === 'test'){
 
 
 module.exports = {
+  config: config,
   read: config.read,
   validate: config.validate,
   regex: {
