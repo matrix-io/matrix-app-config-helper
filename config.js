@@ -16,12 +16,13 @@ module.exports = {
   parsePolicyFromConfig: function(config){
     // get rid of non config related info
     var write = {};
-    var s = config;
-    _.pick(s, ['sensors', 'integrations', 'services', 'events']);
-
+    var s = _.pick(config, ['sensors', 'integrations', 'services', 'events']);
     _.each(s, function (items, title) {
       write[title] = {};
-      console.log(title.grey, ':', items.join(' '))
+      if (!Array.isArray(items)) { //Fix for inner json in services
+        items = Object.keys(items);
+      }
+      console.log(title.grey, ':', items.join(' '));
       _.each(items, function (item) {
         write[title][item] = false;
       })
