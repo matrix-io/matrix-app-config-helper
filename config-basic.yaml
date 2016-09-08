@@ -44,7 +44,7 @@ widgets:
     display: list-group
   cpuChart:
     type: monitor
-    key: cpu
+    key: cpu,memory
     display: line
     label: CPU Chart
   buttonTest:
