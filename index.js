@@ -2,6 +2,7 @@ require('colors');
 
 fs = require( 'fs' );
 yaml = require( 'js-yaml' )
+debug = require( 'debug' )
 _ = require( 'lodash' )
 log = console.log;
 
