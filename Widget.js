@@ -30,8 +30,11 @@ function populate(w, name){
 
 
   // Make single keys ( 'a,b,c' ) into array
-  if ( _.has(w, 'keys') || _.isString(w.keys) ){
+  if ( _.isPlainObject(w.keys) ){
+    // we're fine
+  } else if ( _.has(w, 'keys') && _.isString(w.keys) ){
     // remove whitespace and standardize
+    debug('non object keys', w.keys)
     w.keys = w.keys.split(',').map(function(s){ return s.trim().toLowerCase() });
   } else if ( _.has(w, 'key')) {
     w.keys = [ w.key ];
