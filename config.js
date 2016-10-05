@@ -49,7 +49,7 @@ module.exports = {
 function validate( config ){
   debug('validate');
   try {
-    var reqKeys = [ 'name', 'configVersion','description','keywords' ];
+    var reqKeys = [ 'name', 'configVersion','description' ];
     var errorKeys = [];
     _.each(reqKeys, function(k){
       if (!_.has(config, k)){
