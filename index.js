@@ -17,9 +17,32 @@ if (process.argv[2] === 'test'){
   console.log( require('util').inspect( config.validate(config.read(process.argv[3])), {depth: null}));
 }
 
-var v = JSON.parse(require('fs').readFileSync(__dirname + '/package.json')).version;
+// do version check on debug
+if ( process.env.hasOwnProperty('DEBUG')){
+var msg;
+var info = JSON.parse(require('fs').readFileSync(__dirname + '/package.json'));
+var currentVersion = info.version;
+require('https').get(
+  'https://raw.githubusercontent.com/matrix-io/matrix-app-config-helper/master/package.json',
+function (res) {
+  var write = "";
+  res.on('data', function (c) {
+    write += c;
+  });
+  res.on('end', function (e) {
+    var remoteVersion = JSON.parse(write).version;
+    var msg = "";
+    if (currentVersion === remoteVersion) {
+      msg = '(current)'.grey;
+    } else {
+      msg = '(can upgrade to '.yellow+ remoteVersion +')'.yellow
+    }
+    debug( '📐  [ MATRIX ] App Config Helper v'.green + currentVersion.grey, msg )
+  });
+})
+}
 
-debug( '📐  [ MATRIX ] App Config Helper v'.green + v.grey )
+
 
 module.exports = {
   config: config,
