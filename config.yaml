@@ -1,4 +1,6 @@
-
+## NOTE: This is an older version of the config file.
+# Please refer to https://matrix-io.github.io/matrix-documentation/Configuration/examples/
+#
 ## Data Types
 # string / str / s
 # object / obj / o
