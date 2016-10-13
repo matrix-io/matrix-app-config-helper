@@ -56,11 +56,27 @@ widgets:
     label: Test These buttons
     control: button
     map:
-      'more power': buttonUp
-      'woah there': buttonDown
-      start : buttonStart
-      stop : buttonStop
-      now : buttonSample
+      - value: more power
+        event: buttonUp
+      - value: woah there
+        event: buttonDown
+      - value: start
+        event: buttonStart
+      - value: stop
+        event: buttonStop
+      - value: now
+        event: buttonSample
+  buttonSimpleTest:
+    control: button
+    map:
+      one: one
+      three: three
+      two: two
+    order:
+      - one
+      - two
+      - three
+
   buttonOut:
     type: test
     display: digit

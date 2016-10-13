@@ -80,30 +80,46 @@ function populate(w, name){
   }
 
   // Make sure all controls are valid & automap controlEventList
-  if ( _.has( w, 'control' ) || _.has( w, 'controlEventList' ) ) {
-    if ( _.isObject( w.control ) ) {
-      if ( _.has( w, 'controlEventList' ) ) {
-        debug( 'control and controlEventList are both objects, defaulting to control' );
-        w.controlEventList = control;
-      }
-    } else if ( _.isString( w.control ) ) {
-      // single control
-      if ( util.isControl( w.control ) ) {
-        debug( 'control registered:', w.name, w.control );
-        // apply control
-        _.forIn( w.controlEventList, function ( v, k ) {
-          if ( _.isString( v ) ) {
-            var eventName = v;
-            w.controlEventList[ k ] = {
-              name: k,
-              type: w.type,
-              event: eventName
-            };
+  if ( _.has( w, 'control' ) && _.has( w, 'map' ) ) {
+    var map = w.map;
+    if ( _.isNull( w.control.match(/button|dropdown/))) {
+      console.error('map is only implemented for buttons and dropdowns', w);
+    } else if ( _.isPlainObject(map) ){
+      var newMap = [];
+      // simple notation, expand to collection
+      if ( _.has( w, 'order') ){
+        // do order sort if provided
+        _.each( w.order, function (l) {
+          if ( !_.has(map, l)){
+            console.error('No map entry found for:', l, w)
+            return;
           }
-        } )
+          var m = map[l];
+          newMap.push({
+            event: m,
+            value: l
+          })
+        })
+        w.map = newMap;
+        delete w.order;
       } else {
-        debug( 'invalid control:', w.name, w.control );
+        // obj order - alphabetical
+        _.forIn( map, function ( v, k ) {
+          console.log(v, k);
+          newMap.push({
+            event: v,
+            value: k
+          })
+        });
+        w.map = newMap;
       }
+    }
+
+
+    if ( util.isControl( w.control ) ) {
+      debug( 'control registered:', w.name, w.control );
+    } else {
+      debug( 'invalid control:', w.name, w.control );
     }
   }
 

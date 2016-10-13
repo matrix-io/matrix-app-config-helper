@@ -1,0 +1,140 @@
+# This is an example of what should be stored in firebase.
+# thank http://www.json2yaml.com/ 
+
+# App Information for Store
+name: monitor
+version: 1
+configVersion: 2
+description: Matrix stats
+settings:
+  refresh: 1000
+dataTypes:
+  test: integer
+  device:
+    os_hostname: string
+    os_type: string
+    os_platform: string
+    os_arch: string
+  monitor:
+    cpu: float
+    memory: float
+screens:
+- - info
+- - buttonTest
+  - buttonsTest
+- - pieTest
+  - radarTest
+  - polarTest
+- - cpuChart
+- - cpu
+  - memory
+widgets:
+  info:
+    type: device
+    display: list-group
+    name: info
+    keys:
+    - value
+  cpuChart:
+    type: monitor
+    key: cpu,memory
+    display: line
+    label: CPU Chart
+    name: cpuChart
+    keys:
+    - cpu,memory
+  buttonTest:
+    label: Test Button
+    control: button
+    trigger: buttonTest
+    value: Fire the Missles
+    name: buttonTest
+    type: buttonTest
+    keys:
+    - value
+  buttonsTest:
+    label: Test These buttons
+    control: button
+    map:
+    - value: more power
+      event: buttonUp
+    - value: woah there
+      event: buttonDown
+    - value: start
+      event: buttonStart
+    - value: stop
+      event: buttonStop
+    - value: now
+      event: buttonSample
+    name: buttonsTest
+    type: buttonsTest
+    keys:
+    - value
+  buttonSimpleTest:
+    control: button
+    map:
+    - event: one
+      value: one
+    - event: two
+      value: two
+    - event: three
+      value: three
+    name: buttonSimpleTest
+    type: buttonSimpleTest
+    keys:
+    - value
+  buttonOut:
+    type: test
+    display: digit
+    name: buttonOut
+    keys:
+    - value
+  switchTest:
+    control: switch
+    name: switchTest
+    type: switchTest
+    keys:
+    - value
+  polarTest:
+    type: monitor
+    key: cpu
+    display: polar
+    label: polar bears
+    name: polarTest
+    keys:
+    - cpu
+  pieTest:
+    type: monitor
+    key: cpu
+    display: pie
+    label: CPU Cycles
+    name: pieTest
+    keys:
+    - cpu
+  radarTest:
+    type: monitor
+    key: cpu
+    display: radar
+    label: last CPU
+    name: radarTest
+    keys:
+    - cpu
+  cpu:
+    type: monitor
+    key: cpu
+    display: digit
+    format: round
+    label: cpu
+    name: cpu
+    keys:
+    - cpu
+  memory:
+    type: monitor
+    key: memory
+    display: digit
+    format: round
+    label: memory
+    name: memory
+    keys:
+    - memory
+validated: true
