@@ -33,8 +33,10 @@ function (res) {
     var remoteVersion = JSON.parse(write).version;
     var msg = "";
     if (currentVersion === remoteVersion) {
+      module.exports.current = true;
       msg = '(current)'.grey;
     } else {
+      module.exports.current = false;
       msg = '(can upgrade to '.yellow+ remoteVersion +')'.yellow
     }
     debug( '📐  [ MATRIX ] App Config Helper v'.green + currentVersion.grey, msg )
