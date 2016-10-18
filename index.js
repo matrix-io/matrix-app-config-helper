@@ -13,9 +13,23 @@ if (process.argv[2] === 'test'){
 
 var config = require('./config.js')
 
+module.exports = {
+  config: config,
+  read: config.read,
+  validate: config.validate,
+  regex: {
+    string :/(string|str|s)/,
+    object :/(object|obj|o)/,
+    float :/(float|fl|f)/,
+    integer :/(integer|int|i)/,
+    boolean :/(b|bool|boolean)/,
+  }
+}
+
 if (process.argv[2] === 'test'){
   console.log( require('util').inspect( config.validate(config.read(process.argv[3])), {depth: null}));
 }
+
 
 // do version check on debug
 if ( process.env.hasOwnProperty('DEBUG')){
@@ -42,19 +56,4 @@ function (res) {
     debug( '📐  [ MATRIX ] App Config Helper v'.green + currentVersion.grey, msg )
   });
 })
-}
-
-
-
-module.exports = {
-  config: config,
-  read: config.read,
-  validate: config.validate,
-  regex: {
-    string :/(string|str|s)/,
-    object :/(object|obj|o)/,
-    float :/(float|fl|f)/,
-    integer :/(integer|int|i)/,
-    boolean :/(b|bool|boolean)/,
-  }
 }
