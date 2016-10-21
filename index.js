@@ -55,5 +55,7 @@ function (res) {
     }
     debug( '📐  [ MATRIX ] App Config Helper v'.green + currentVersion.grey, msg )
   });
+}).on('error', function (e) {
+  console.error('Upgrade Check Error: ', e)
 })
 }
