@@ -1,5 +1,5 @@
 # This is an example of what should be stored in firebase.
-# thank http://www.json2yaml.com/ 
+# thank http://www.json2yaml.com/
 
 # App Information for Store
 name: monitor
@@ -137,4 +137,29 @@ widgets:
     name: memory
     keys:
     - memory
+
+services:
+  vehicle:
+    engine: vehicle
+    type: vehicle
+    engineParams:
+      zones:
+      - exitZone:
+        - - 24
+          - 33
+        - - 24
+          - 42
+        - - 42
+          - 100
+        - - 100
+          - 110
+      speedThresh : 45,
+      nightMode: dynamic
+  face:
+    engine: face-recognition
+    type: face
+    engineParams:
+      minDwell : 1
+      minHappy : 0.1
+      
 validated: true

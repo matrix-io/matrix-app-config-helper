@@ -30,9 +30,6 @@ if (process.argv[2] === 'test'){
   console.log( require('util').inspect( config.validate(config.read(process.argv[3])), {depth: null}));
 }
 
-
-// do version check on debug
-if ( process.env.hasOwnProperty('DEBUG')){
 var msg;
 var info = JSON.parse(require('fs').readFileSync(__dirname + '/package.json'));
 var currentVersion = info.version;
@@ -58,4 +55,3 @@ function (res) {
 }).on('error', function (e) {
   console.error('Upgrade Check Error: ', e)
 })
-}
