@@ -21,7 +21,8 @@ module.exports = {
     _.each(s, function (items, title) {
       write[title] = {};
       if (!Array.isArray(items)) { //Fix for inner json in services
-        items = Object.keys(items);
+        //BUG: There will be collisions if different services have the same type name
+        items = _.map(items, 'type');
       }
       console.log(title.grey, ':', items.join(' '));
       _.each(items, function (item) {
@@ -47,7 +48,7 @@ module.exports = {
 
 }
 
-// Validates keys and values matching their corresponding RegExps   
+// Validates keys and values matching their corresponding RegExps
 function validateDataTypeStructure(root) {
   var result = true;
 
@@ -58,7 +59,7 @@ function validateDataTypeStructure(root) {
         console.log('Invalid key: ', key, ' Data types must only be named using letters, numbers and "_".');
         result = false;
       }
-      if (!validateDataTypeStructure(root[key], key, value)) { 
+      if (!validateDataTypeStructure(root[key], key, value)) {
         result = false; //If any nested match fails, update result
       }
     });
