@@ -30,7 +30,7 @@ function populate(w, name){
 
 
   // Make single keys ( 'a,b,c' ) into array
-  if ( _.isPlainObject(w.keys) ){
+  if ( _.isArray(w.keys) || _.isPlainObject(w.keys) ){
     // we're fine
   } else if ( _.has(w, 'keys') && _.isString(w.keys) ){
     // remove whitespace and standardize

@@ -1,6 +1,4 @@
 
-# NOTE: When updating this, update config-basic in config-helper repo
-
 # App Information for Store
 name: monitor
 version: 1
@@ -44,7 +42,7 @@ widgets:
     display: list-group
   cpuChart:
     type: monitor
-    key: cpu,memory
+    keys: cpu,memory
     display: line
     label: CPU Chart
   buttonTest:

@@ -1,358 +1,112 @@
-## NOTE: This is an older version of the config file.
-# Please refer to https://matrix-io.github.io/matrix-documentation/Configuration/examples/
-#
-## Data Types
-# string / str / s
-# object / obj / o
-# float / fl / f
-# integer / int / i
-
-# ####
-## Displays
-#
-# line
-# bar
-# list
-# digit
-# list-group
-# gauge
-# list-details
-# indicator
-# radar
-# heat-map
-# map
-# pie-chart
-# label
-#
-## Formats
-# round
-# percent
-# fixed
-# avg
-# mean
-# max
-# min
-# count
-#
-## Layouts
-# overlap
-# grid
-# stack
-# books
-# left
-# centered
-# right
-# cross +
-# column
-# row
-
-#
-## Controls
-# input
-# keyboard
-# button
-# switch
-# range
-# xy
-# radial
-# radio
-# select
-# video
-# audio
-# label
-# picture
-# upload
 
 # App Information for Store
-name: testConfig
-version: 0
+name: monitor
+version: 1
 configVersion: 2
-description: The thing
-images:
-  - http://someimage.com
-  - http://youtube.com
-  - img.png
-imagesDir: assets
-icon:
-  - assets/icon.png
-keywords: test, keyword
+description: Matrix stats
 
-integrations:
-  - nest
-  - robovote
-
-crosstalk:
-  - event1
-  - event2
-
-  # these sensors are used in the app
-sensors:
-  - camera
-  - control
-  - speed
-  - temperature
-  - power
-
-
-# these variables are made available to the app
 settings:
-  foo: bar
+  refresh: 1000
 
-# explicit
 dataTypes:
-  test: string
-  face:
-    age: integer
-    smile: float
-    gender: integer
-  power: float
-  performance: float
-  temperature: float
-  control: float
-  speed: float
+  test: integer
+  device:
+    'os_hostname': string
+    'os_type': string
+    'os_platform': string
+    'os_arch': string
+  monitor:
+    cpu: float
+    memory: float
 
-# implicit declaration assumes objects
-# dataTypes:
-#   - test
-#   - face
-
-
-# screens are comprised of widgets, intended for multiple dashboards
+# screens are comprised of widgets
 screens:
-  main:
-# Row 1
-  - - camera
-# Row 2
-  - - joystick
-    - controls
-    - battery
-# Row 3
-  - - temp
-    - power
-    - speed
-  dashboard:
-    - powerBig
-    - performance
-    - heat
+  # Row 1
+  - - info
+  # Row 2
+  - - buttonTest
+    - buttonsTest
+  #  - buttonOut
+  - - pieTest
+    - radarTest
+    - polarTest
+  # row 3
+  - - cpuChart
+  # Row 4
+  - - cpu
+    - memory
 
-  training:
-    - faceScanList
-
-# referenced by name from screens
 widgets:
-  noLayout:
-    # matrix.type('test') maps to this
-    type: test
-    # matrix.type('test').send( {foo: 123} )
-    key: foo
-    display:
-      - gauge
-      - map
-  faceScanList:
-    type: face
-    layout: books
-    display:
-      video:
-        size: 2
-        service: face
-      upload :
-        control: upload
-        font-size: 3em
-        label: 'Add your Face'
-      detections :
-        # Matrix.type('face').send({ detections: { beard: 0.1, smile: 0.55... } })
-        display : list
-        grouped : true
-
-  powerBig:
-    type: power
-    layout: overlap
-    keys: voltage, watts, temperature
-    filter:
-      - now
-      - recent
-      - last-week
+  info:
+    type: device
+    display: list-group
+  cpuChart:
+    type: monitor
+    keys: cpu,memory
     display: line
-    displayList:
-      # Matrix.type('power').send({mvhLeft: 1123, estimate: 90, usage: 110 })
-      -
-        label : millawatt hours remaining
-        color: red
-        filter: round
-        type: mvhLeft
-      -
-        label : minutes remaining estimate
-        color: green
-        filter: round
-        type: estimate
-
-      -
-        label: current load
-        color: brown
-        weight: 2
-        filter: round
-        type: usage
-
-  performance:
-    type: engine
-    label: Performance
-    display : gauge
-    filter: now
-    layout: books
-    keys: temperature, rpm
-    displayList:
-      # Matrix.type('engine').send({rpm: 1123, efficieny: 0.23, torque: 110.12 })
-      -
-        label: rpm
-        color: lightgreen
-        type: rpm
-      -
-        label: efficiency %
-        color: lightgreen
-        format: percentage
-        type: efficiency
-      -
-        label: Torque lbs
-        color: lightgreen
-        format: fixed(1)
-        type: torque
-
-
-  heat:
-    type: temperature
-    layout: grid
-    filter:
-      - recent
-      - now
-    display:
-      rearWheels:
-        label: 'Rear Wheel Temp'
-        display: bar
-      frontWheels:
-        label: 'Front Wheel Temp'
-        display: bar
-      gears:
-        label: 'Gear Temp'
-        display: bar
-      battery:
-        label: 'Battery Temp'
-        display: bar
-
-
-
-  camera:
-   type: speed,
-   # Label on Display
-   label: Robot View
-   display: video
-   services:
-    - vehicle
-
-  joystick:
-    # Matrix.type('joystick').send()
-    type: joystick
-    display: radial
-    control: joystick
-    # vvv default
-    #controlMap:
-    #- joystick: joystick
-
-  controls:
-    label: Robot Controls
-    type: control-event
-    layout: cross
-    # these events trigger `control-up` in app
-    # are written as "^" in button
-    controlEventList:
-      ^ : up
-      v : down
-      o : stop
-      <- : left
-      -> : right
+    label: CPU Chart
+  buttonTest:
+    label: Test Button
     control: button
-    # important to note
+    trigger: buttonTest
+    value: Fire the Missles
+  buttonsTest:
+    label: Test These buttons
+    control: button
+    map:
+      - value: more power
+        event: buttonUp
+      - value: woah there
+        event: buttonDown
+      - value: start
+        event: buttonStart
+      - value: stop
+        event: buttonStop
+      - value: now
+        event: buttonSample
+  buttonSimpleTest:
+    control: button
+    map:
+      one: one
+      three: three
+      two: two
+    order:
+      - one
+      - two
+      - three
 
-  battery:
-    label: Power Level
-    layout: books
-    displayList:
-      -
-        type: power
-        display: bar
-        theme: rainbow
-        size: 1
-      -
-        type: power
-        display: line
-        filter: last-week
-        size: 2
-
-  temp:
-    type: temperature
-    label: Temp F°
-
-    layout: stack
-    display:
-      -
-        display: digit
-        size: 6
-        filter: round
-      -
-        display: indicator
-        filter: overheat
-        options:
-          type: light
-          # square, round
-          shape: square
-          color:
-            on: red
-            off: white
-
-  power:
-    #default
-    # type: power
-    label : On
-    layout: stack
-    #alternative to display
-    displayList:
-      -
-        label: On
-        display: indicator
-        #default
-        # type: power
-        options:
-          colors:
-            on: darkred
-            off: grey
-        size: 2
-      -
-        label: Powered by Matrix of AdMobilize
-        align: right
-        gap: 1
-        size: 1
-
-  speed:
-    label: Speed mph
-    type: speed
+  buttonOut:
+    type: test
     display: digit
-
-# dateRange - compose Query
-# watch - trigger event
-filters:
-  recent:
-    dateRange: 5 minutes
-  now:
-    dateRange: 1 minute
-  last-week:
-    dateRange: 1 week
-    # all charts use this range unless otherwise specified
-    default: true
-
-  # idk if i like this, shouldn't it be in apps
-  overheat:
-    watch: gt(120)
-  startupBeard:
-    watch: gt(0.45)
+  switchTest:
+    control: switch
+  polarTest:
+    type: monitor
+    key: cpu
+    display: polar
+    label: polar bears
+  pieTest:
+    type: monitor
+    key: cpu
+    display: pie
+    label: CPU Cycles
+  radarTest:
+    type: monitor
+    key: cpu
+    display: radar
+    label: last CPU
+  cpu:
+    type: monitor
+    key: cpu
+    display: digit
+    format: round
+    label: cpu
+  memory:
+    type: monitor
+    key: memory
+    display: digit
+    format: round
+    label: memory
 
 services:
   vehicle:

@@ -11,7 +11,7 @@ var floatRegex = /^(float|fl|f)$/;
 var integerRegex = /^(integer|int|i)$/;
 var booleanRegex = /^(b|bool|boolean)$/;
 
-var sensorRegex = /^(temperature|gyroscope|humidity|microphone|camera|pressure|accelerometer|compass|uv)$/;
+var sensorRegex = /^(mic|temperature|gyroscope|humidity|microphone|camera|pressure|accelerometer|compass|uv)$/;
 
 module.exports = {
   parsePolicyFromConfig: function(config){
@@ -56,7 +56,7 @@ function validateDataTypeStructure(root) {
     _.each(root, function (value, key) {
       debug('Checking key: ', key);
       if (!key.toString().match(dataTypeKeyRegex)) {
-        console.log('Invalid key: ', key, ' Data types must only be named using letters, numbers and "_".');
+        console.error('Invalid key: ', key, ' Data types must only be named using letters, numbers and "_".');
         result = false;
       }
       if (!validateDataTypeStructure(root[key], key, value)) {
@@ -66,7 +66,7 @@ function validateDataTypeStructure(root) {
   } else {
     debug('Checking value: ', root);
     if (!root.toString().match(dataTypeRegex)) {
-      console.log('Invalid value: ', root, ' Please provide a valid data type.');
+      console.error('Invalid value: ', root, ' Please provide a valid data type.');
       result = false;
     }
   }
@@ -100,7 +100,10 @@ function validate( config ){
       }
 
       debug('DataTypes:', config.dataTypes);
-      validateDataTypeStructure(config.dataTypes);
+      if ( !validateDataTypeStructure(config.dataTypes) ){
+        // bail on bad data type
+        throw new Error('Invalid Data Type');
+      }
 
     }
 
