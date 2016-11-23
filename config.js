@@ -11,7 +11,7 @@ var floatRegex = /^(float|fl|f)$/;
 var integerRegex = /^(integer|int|i)$/;
 var booleanRegex = /^(b|bool|boolean)$/;
 
-var sensorRegex = /^(mic|temperature|gyroscope|humidity|microphone|camera|pressure|accelerometer|compass|uv)$/;
+var sensorRegex = /^(mic|temperature|gyroscope|humidity|altitude|microphone|camera|pressure|accelerometer|compass|uv)$/;
 
 module.exports = {
   parsePolicyFromConfig: function(config){
