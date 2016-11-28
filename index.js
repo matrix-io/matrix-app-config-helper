@@ -6,7 +6,7 @@ _ = require( 'lodash' )
 var debug = require('debug')('app-config')
 log = console.log;
 
-if (process.argv[2] === 'test'){
+if ( process.argv[1] === 'index.js' && process.argv[2] === 'test'){
   process.env['DEBUG'] = "*";
 }
 
