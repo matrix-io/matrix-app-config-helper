@@ -25,7 +25,7 @@ module.exports = {
   }
 }
 
-if (process.argv[2] === 'test'){
+if ( process.argv[1] === 'index.js' &&  process.argv[2] === 'test'){
   console.log( require('util').inspect( config.validate(config.read(process.argv[3])), {depth: null}));
 }
 
