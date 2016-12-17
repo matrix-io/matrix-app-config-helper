@@ -6,10 +6,6 @@ _ = require( 'lodash' )
 var debug = require('debug')('app-config')
 log = console.log;
 
-if ( process.argv[1] === 'index.js' && process.argv[2] === 'test'){
-  process.env['DEBUG'] = "*";
-}
-
 var config = require('./config.js')
 
 module.exports = {
@@ -25,7 +21,8 @@ module.exports = {
   }
 }
 
-if ( process.argv[1] === 'index.js' &&  process.argv[2] === 'test'){
+if ( process.argv[2] === 'test'){
+  process.env['DEBUG'] = "*";
   console.log( require('util').inspect( config.validate(config.read(process.argv[3])), {depth: null}));
 }
 
