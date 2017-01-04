@@ -133,6 +133,9 @@ function validate(w){
     debug('Display List is not an array or an object'.red);
   }
 
+  //check if all controls are actually controls  
+  if (_.has(w, 'control') && !util.isControl(w.control)) throw new Error('widget ' + w.name.yellow + ' has an unknown control ' + w.control.red);
+  
   // make sure data type is defined - deep display map
   _.each( w.displayList, function ( di ) {
     if ( _.has( di, 'type' ) ) {
@@ -208,12 +211,12 @@ function validate(w){
   }
 
   // check for interface / display
-  var widgetSpot = config.screenWidgetList.indexOf( w.name );
-  if ( widgetSpot === -1 ) {
-    debug( 'widget is unused'.red)
+  if (_.has(config, 'screenWidgetList')) {
+    var widgetSpot = config.screenWidgetList.indexOf( w.name );
+    if ( widgetSpot === -1 ) {
+      debug( 'widget is unused'.red)
+    }
   }
-
-
 
   // make sure it can display
   if ( !( _.has( w, 'display' ) || _.has( w, 'displayList' ) ||
