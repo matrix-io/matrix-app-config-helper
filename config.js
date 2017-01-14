@@ -1,7 +1,10 @@
 var util = require('./helpers.js');
 var _ = require('lodash')
 
-var debug = require('debug')('config-helper')
+var dl = require('debug')
+dl.log = console.log.bind(console);
+var debug = new dl('config-helper')
+
 
 var dataTypeRegex = /^(string|str|s|object|obj|o|float|fl|f|integer|int|i|b|bool|boolean)$/;
 var dataTypeKeyRegex = /^([a-z0-9_]+)$/i; //Case insensitive alphanumeric and _
