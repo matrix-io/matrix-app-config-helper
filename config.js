@@ -14,7 +14,7 @@ var floatRegex = /^(float|fl|f)$/;
 var integerRegex = /^(integer|int|i)$/;
 var booleanRegex = /^(b|bool|boolean)$/;
 
-var sensorRegex = /^(mic|temperature|gyroscope|humidity|altitude|microphone|camera|pressure|accelerometer|compass|uv)$/;
+var sensorRegex = /^(mic|temperature|gyroscope|magnetometer|humidity|altitude|microphone|camera|pressure|accelerometer|compass|uv)$/;
 
 module.exports = {
   parsePolicyFromConfig: function(config){
@@ -112,9 +112,9 @@ function validate( config ){
 
     // debug(config.widgets);
     // check that all screens are widgets
-    if (_.has(config, 'widgets')) { 
+    if (_.has(config, 'widgets')) {
       debug('Validating Widgets');
-      
+
       var Widget = require('./Widget.js');
 
       // check widgets for things
