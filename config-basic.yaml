@@ -19,6 +19,16 @@ dataTypes:
     cpu: float
     memory: float
 
+sensors:
+  - temperature
+  - gyroscope
+
+integrations:
+  - zigbee
+
+events:
+  - light-on
+
 # screens are comprised of widgets
 screens:
   # Row 1
