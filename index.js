@@ -21,9 +21,8 @@ module.exports = {
   }
 }
 
-
 // this gets called by matrix cli sometimes, lets not turn on debug for no reason
-if (process.argv[2] === 'test' && process.argv[1].indexOf('matrix') === -1) {
+if (process.argv[2] === 'test' && process.argv[1].indexOf('matrix-app-config-helper') !== -1) {
   process.env['DEBUG'] = "*";
   console.log(require('util').inspect(config.validate(config.read(process.argv[3])), { depth: null }));
 }
