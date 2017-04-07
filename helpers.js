@@ -5,7 +5,7 @@ var _ = require('lodash')
 function isDisplay( d ) {
   var ds = [ 'line', 'bar', 'list', 'digit', 'list-group',
   'gauge', 'list-details', 'indicator', 'radar', 'heat-map',
-  'map', 'pie-chart', 'label' ]
+  'map', 'pie-chart', 'label', 'link' ]
 
   return ( ds.indexOf( d ) > -1 )
 }
@@ -13,7 +13,7 @@ function isDisplay( d ) {
 function isControl( c ) {
   var cs = [ 'input', 'keyboard', 'button', 'switch', 'range', 'x', 'y',
   'radial', 'radio', 'select', 'video', 'audio', 'label', 'picture'
-  , 'upload', 'joystick' ]
+  , 'upload', 'joystick', 'color' ]
 
   return ( cs.indexOf( c ) > -1 )
 
