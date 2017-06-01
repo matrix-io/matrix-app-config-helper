@@ -1,5 +1,8 @@
 # HISTORY
 
+## 0.2.3
+- Remove version check
+
 ## 0.2.2
 - Don't turn on debug if CLI uses test as a keyword
 
