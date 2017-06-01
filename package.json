@@ -1,6 +1,6 @@
 {
   "name": "matrix-app-config-helper",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "MatrixOS Application Configuration Helper Utility - Makes sure the config file is valid, and adds defaults. ",
   "main": "index.js",
   "scripts": {
