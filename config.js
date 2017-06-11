@@ -147,7 +147,7 @@ function validate(config) {
       // populate schema string for bq
       _.each(config.dataTypes, function(value, key) {
 
-        // In case of dataTypes: 
+        // In case of dataTypes:
         //              foo: integer
         // => { foo: "foo:integer" }
         if (_.isString(value)) {
@@ -212,6 +212,10 @@ function validate(config) {
           if (_.has(s, 'engineParams.zone')) {
             s.engineParams.zones = s.engineParams.zones || []
             s.engineParams.zones.push(s.engineParams.zone);
+          }
+          // check for misspelling
+          if(!_.has(s, 'type:')){
+            throw new Error('engine type required. Should be `type:`');
           }
         }
       })
