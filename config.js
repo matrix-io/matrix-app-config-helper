@@ -122,13 +122,13 @@ function validate(config) {
     //some apps just don't make data
     if (_.has(config, 'dataTypes')) {
       if (_.isArray(config.dataTypes) ||  _.isString(config.dataTypes)) {
-        throw new Error('dataTypes can not be a string nor an array.');
+        throw new Error('dataTypes can not be a string nor an array.', config.dataTypes);
       }
 
       debug('DataTypes:', config.dataTypes);
       if (!validateDataTypeStructure(config.dataTypes)) {
         // bail on bad data type
-        throw new Error('Invalid Data Type');
+        throw new Error('Invalid Data Type: ', config.dataTypes);
       }
 
       function standardizeValue(input) {
@@ -214,10 +214,11 @@ function validate(config) {
             s.engineParams.zones.push(s.engineParams.zone);
           }
           // check for misspelling
-          if(!_.has(s, 'type:')){
-            throw new Error('engine type required. Should be `type:`');
+          if(!_.has(s, 'type')){
+            throw new Error('type required');
           }
         }
+        else throw new Error('engine required');
       })
     }
 
