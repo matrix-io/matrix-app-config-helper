@@ -215,10 +215,10 @@ function validate(config) {
           }
           // check for misspelling
           if(!_.has(s, 'type')){
-            throw new Error('type required');
+            throw new Error('Service type required on config.yaml! Please check for misspelling! ', s);
           }
         }
-        else throw new Error('engine required');
+        else throw new Error('Service engine required on config.yaml! Please check for misspelling! ', s);
       })
     }
 
