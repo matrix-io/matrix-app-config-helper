@@ -213,6 +213,15 @@ function validate(config) {
             s.engineParams.zones = s.engineParams.zones || []
             s.engineParams.zones.push(s.engineParams.zone);
           }
+          // check for misspelling
+          if(!_.has(s, 'type') && s.engine !== 'voice'){
+            throw new Error('Service type required on config.yaml! Please check for misspelling! ', s);
+          }
+
+          // add voice default
+          if ( s.engine === 'voice' && s.phrase !== 'matrix'){
+            s.phrase === 'matrix';
+          }
         }
       })
     }

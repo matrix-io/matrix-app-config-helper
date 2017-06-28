@@ -161,5 +161,8 @@ services:
     engineParams:
       minDwell : 1
       minHappy : 0.1
-      
+  voice:
+    engine: voice
+    phrase: matrix
+
 validated: true
