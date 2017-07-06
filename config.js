@@ -219,7 +219,6 @@ function validate(config) {
             s.engineParams.zones.push(s.engineParams.zone);
           }
           // check for misspelling
-<<<<<<< HEAD
           if(!_.has(s, 'type') && s.engine !== 'voice'){
             throw new Error('Service type required on config.yaml! Please check for misspelling! ', s);
           }
@@ -228,11 +227,6 @@ function validate(config) {
           if ( s.engine === 'voice' && s.phrase !== 'matrix'){
             s.phrase === 'matrix';
           }
-=======
-          if(!_.has(s, 'type')){
-            throw new Error('Service type required on config.yaml! Please check for misspelling! ', s);
-          }
->>>>>>> 60d427e4d669bf978324ffbb6816c007489e400c
         }
         else throw new Error('Service engine required on config.yaml! Please check for misspelling! ', s);
       })
