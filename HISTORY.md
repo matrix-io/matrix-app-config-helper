@@ -8,3 +8,4 @@
 
 ## 0.2.0
 - Added control validation to widget check
+Ensure engine names are not used for service names.

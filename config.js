@@ -122,13 +122,13 @@ function validate(config) {
     //some apps just don't make data
     if (_.has(config, 'dataTypes')) {
       if (_.isArray(config.dataTypes) ||  _.isString(config.dataTypes)) {
-        throw new Error('dataTypes can not be a string nor an array.');
+        throw new Error('dataTypes can not be a string nor an array.', config.dataTypes);
       }
 
       debug('DataTypes:', config.dataTypes);
       if (!validateDataTypeStructure(config.dataTypes)) {
         // bail on bad data type
-        throw new Error('Invalid Data Type');
+        throw new Error('Invalid Data Type: ', config.dataTypes);
       }
 
       function standardizeValue(input) {
@@ -147,7 +147,7 @@ function validate(config) {
       // populate schema string for bq
       _.each(config.dataTypes, function(value, key) {
 
-        // In case of dataTypes: 
+        // In case of dataTypes:
         //              foo: integer
         // => { foo: "foo:integer" }
         if (_.isString(value)) {
@@ -219,6 +219,7 @@ function validate(config) {
             s.engineParams.zones.push(s.engineParams.zone);
           }
           // check for misspelling
+<<<<<<< HEAD
           if(!_.has(s, 'type') && s.engine !== 'voice'){
             throw new Error('Service type required on config.yaml! Please check for misspelling! ', s);
           }
@@ -227,7 +228,13 @@ function validate(config) {
           if ( s.engine === 'voice' && s.phrase !== 'matrix'){
             s.phrase === 'matrix';
           }
+=======
+          if(!_.has(s, 'type')){
+            throw new Error('Service type required on config.yaml! Please check for misspelling! ', s);
+          }
+>>>>>>> 60d427e4d669bf978324ffbb6816c007489e400c
         }
+        else throw new Error('Service engine required on config.yaml! Please check for misspelling! ', s);
       })
     }
 
