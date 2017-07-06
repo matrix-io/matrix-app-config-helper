@@ -206,7 +206,12 @@ function validate(config) {
     //#end widget block
 
     if (_.has(config, 'services')) {
-      _.each(config.services, function(s) {
+      _.each(config.services, function(s, name) {
+        // the forbidden names for things
+        if ( !_.isNull(name.match(/voice|face|recognition|detection/))){
+          throw new Error(name, 'is not a permitted service name, please choose something more custom.')
+        }
+
         if (_.has(s, 'engine')) {
           // standardize zone to zones
           if (_.has(s, 'engineParams.zone')) {
