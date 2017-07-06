@@ -1,4 +1,6 @@
 # HISTORY
+## 0.2.5
+- Fix conflict errors
 
 ## 0.2.3
 - Remove version check
