@@ -208,7 +208,7 @@ function validate(config) {
     if (_.has(config, 'services')) {
       _.each(config.services, function(s, name) {
         // the forbidden names for things
-        if ( !_.isNull(name.match(/voice|face|recognition|detection/))){
+        if ( name === 'voice' || name === 'face' || name === 'recognition'|| name === 'detection' ){
           throw new Error(name, 'is not a permitted service name, please choose something more custom.')
         }
 
