@@ -23,7 +23,7 @@ module.exports = {
    * @param {String} format what type of data is it?
    * @return {String} "key:format"
    */
-  encodeQueryString: function(key, format) {
+  encodeQueryString: function (key, format) {
     var suffix = ':';
 
     if (format.match(/^(b|bool|boolean)$/)) {
@@ -40,25 +40,25 @@ module.exports = {
 
     return key + suffix;
   },
-  parsePolicyFromConfig: function(config) {
+  parsePolicyFromConfig: function (config) {
     // get rid of non config related info
     var write = {};
     var s = _.pick(config, ['sensors', 'integrations', 'services', 'events']);
-    _.each(s, function(items, title) {
+    _.each(s, function (items, title) {
       write[title] = {};
       if (!Array.isArray(items)) { //Fix for inner json in services
         //BUG: There will be collisions if different services have the same type name
         items = _.map(items, 'type');
       }
       console.log(title.grey, ':', items.join(' '));
-      _.each(items, function(item) {
+      _.each(items, function (item) {
         write[title][item] = false;
       })
     })
 
     return write;
   },
-  read: function(fileName) {
+  read: function (fileName) {
     fileName = fileName || 'config.yaml';
     var config;
     try {
@@ -79,7 +79,7 @@ function validateDataTypeStructure(root) {
   var result = true;
 
   if (_.isObject(root)) { // If it has nested values go over those
-    _.each(root, function(value, key) {
+    _.each(root, function (value, key) {
       debug('Checking key: ', key);
       if (!key.toString().match(dataTypeKeyRegex)) {
         console.error('Invalid key: ', key, ' Data types must only be named using letters, numbers and "_".');
@@ -106,7 +106,7 @@ function validate(config) {
   try {
     var reqKeys = ['name', 'configVersion', 'description'];
     var errorKeys = [];
-    _.each(reqKeys, function(k) {
+    _.each(reqKeys, function (k) {
       if (!_.has(config, k)) {
         errorKeys.push(k);
       }
@@ -121,7 +121,7 @@ function validate(config) {
     debug('Keywords:', config.keywords);
     //some apps just don't make data
     if (_.has(config, 'dataTypes')) {
-      if (_.isArray(config.dataTypes) ||  _.isString(config.dataTypes)) {
+      if (_.isArray(config.dataTypes) || _.isString(config.dataTypes)) {
         throw new Error('dataTypes can not be a string nor an array.', config.dataTypes);
       }
 
@@ -134,8 +134,8 @@ function validate(config) {
       function standardizeValue(input) {
         var out = (!_.isNull(input.match(stringRegex))) ? 'string' :
           (!_.isNull(input.match(integerRegex))) ? 'integer' :
-          (!_.isNull(input.match(booleanRegex))) ? 'boolean' :
-          (!_.isNull(input.match(floatRegex))) ? 'float' : 'null'
+            (!_.isNull(input.match(booleanRegex))) ? 'boolean' :
+              (!_.isNull(input.match(floatRegex))) ? 'float' : 'null'
         if (out === 'null') {
           throw new Error('Invalid Data Type Format', input);
         }
@@ -145,7 +145,7 @@ function validate(config) {
       config.schemaStrings = {};
 
       // populate schema string for bq
-      _.each(config.dataTypes, function(value, key) {
+      _.each(config.dataTypes, function (value, key) {
 
         // In case of dataTypes:
         //              foo: integer
@@ -154,7 +154,7 @@ function validate(config) {
           config.schemaStrings[key] = key + ':' + standardizeValue(value);
         } else {
           // standard use
-          config.schemaStrings[key] = _.map(value, function(format, name) {
+          config.schemaStrings[key] = _.map(value, function (format, name) {
             return name + ':' + format;
           }).join(',')
         }
@@ -170,12 +170,15 @@ function validate(config) {
       var Widget = require('./Widget.js');
 
       // check widgets for things
-      _.forIn(config.widgets, function(w, name) {
+      _.forIn(config.widgets, function (w, name) {
         debug('Widget ' + name + ': ');
         new Widget(name, w);
       })
 
       if (_.has(config, 'screens')) {
+        if (_.isString(config.screens[0])) {
+          throw new Error('\n> config.screens first value is a string not another array. Be sure to use two dashes for new rows in config.yaml. \nscreens:\n  - - ' + config.screens.join('\n    - '));
+        }
 
         var widgetList = Object.keys(config.widgets);
 
@@ -189,7 +192,7 @@ function validate(config) {
         module.exports.widgetNames = Object.keys(widgets);
         module.exports.screenNames = Object.keys(screens);
 
-        var screenWidgetList = module.exports.screenWidgetList = _.flatten(_.map(screens, function(v, k) {
+        var screenWidgetList = module.exports.screenWidgetList = _.flatten(_.map(screens, function (v, k) {
           return _.flattenDeep(v);
         }));
         //
@@ -206,9 +209,9 @@ function validate(config) {
     //#end widget block
 
     if (_.has(config, 'services')) {
-      _.each(config.services, function(s, name) {
+      _.each(config.services, function (s, name) {
         // the forbidden names for things
-        if ( name === 'voice' || name === 'face' || name === 'recognition'|| name === 'detection' ){
+        if (name === 'voice' || name === 'face' || name === 'recognition' || name === 'detection') {
           throw new Error(name, 'is not a permitted service name, please choose something more custom.')
         }
 
@@ -219,12 +222,12 @@ function validate(config) {
             s.engineParams.zones.push(s.engineParams.zone);
           }
           // check for misspelling
-          if(!_.has(s, 'type') && s.engine !== 'voice'){
+          if (!_.has(s, 'type') && s.engine !== 'voice') {
             throw new Error('Service type required on config.yaml! Please check for misspelling! ', s);
           }
 
           // add voice default
-          if ( s.engine === 'voice' && s.phrase !== 'matrix'){
+          if (s.engine === 'voice' && s.phrase !== 'matrix') {
             s.phrase === 'matrix';
           }
         }
@@ -233,7 +236,7 @@ function validate(config) {
     }
 
     if (_.has(config, 'sensors')) {
-      _.each(config.sensors, function(s, i) {
+      _.each(config.sensors, function (s, i) {
         if (_.isNull(s.match(sensorRegex))) {
           console.warn(s, 'is not a proper sensor');
           config.sensors = _.without(config.sensors, s);
