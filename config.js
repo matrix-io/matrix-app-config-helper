@@ -88,6 +88,12 @@ function validateDataTypeStructure(root) {
       if (!validateDataTypeStructure(root[key], key, value)) {
         result = false; //Recurse to check values, if any nested match fails, update result
       }
+
+      // field names can't start with numbers in bq
+      if ( !_.isNull(key[0].match(/[0-9]/)) ){
+        console.error('Invalid Key:', key, 'First character of data type cannot be a number.')
+        result = false;
+      }
     });
   } else {
     debug('Checking value: ', root);
