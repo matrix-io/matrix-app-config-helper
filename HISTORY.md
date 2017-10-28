@@ -1,4 +1,6 @@
 # HISTORY
+## 0.2.7
+- Prevent data type key from starting with number
 ## 0.2.5
 - Fix conflict errors
 
